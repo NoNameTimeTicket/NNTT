@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/footer.css') }}">
     <title>{% block title %}NNTT 공연 예매{% endblock %}</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -110,8 +112,10 @@
 
     <!-- 메인 컨텐츠 영역 -->
     <main class="container">
-        {% block content %}{% endblock %}
+        {% block content %}
+        
+        {% endblock %}
     </main>
-
+    {% include "footer.html" %}
 </body>
 </html>
