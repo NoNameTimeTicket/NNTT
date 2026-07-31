@@ -7,17 +7,26 @@
       href="{{ url_for('static', filename='css/footer.css') }}">
     <title>{% block title %}NNTT 공연 예매{% endblock %}</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; color: #333; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
         /* 상단 GNB 전체 레이아웃 */
-        .navbar { 
-            display: flex; 
+        .navbar {
+            display: flex;
             justify-content: space-between; /* 좌측 그룹과 우측 메뉴를 양 끝 배치 */
-            align-items: center; 
-            padding: 15px 40px; 
-            background-color: #1a1a1a; 
-            color: #fff; 
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #1a1a1a;
+            color: #fff;
         }
 
         /* [핵심] 로고 + 검색창을 묶어주는 좌측 그룹 */
@@ -26,57 +35,58 @@
             align-items: center;
             gap: 25px; /* 로고와 검색창 사이의 간격 */
         }
-        
-        .navbar .logo a { 
-            color: #fff; 
-            text-decoration: none; 
-            font-size: 1.5rem; 
-            font-weight: bold; 
+
+        .navbar .logo a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
-        
+
         /* GNB 통합 검색바 */
         .search-form {
             display: flex;
             gap: 5px;
         }
-        .search-form input { 
-            padding: 6px 12px; 
-            border-radius: 4px; 
-            border: none; 
-            outline: none; 
+        .search-form input {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            outline: none;
             width: 220px; /* 검색창 너비 지정 */
         }
-        .search-form button { 
-            padding: 6px 12px; 
-            background-color: #ff4757; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
+        .search-form button {
+            padding: 6px 12px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
-        
+
         /* 우측 상단 로그인 메뉴 영역 */
-        .nav-right { 
-            display: flex; 
-            align-items: center; 
+        .nav-right {
+            display: flex;
+            align-items: center;
         }
-        .nav-links { 
-            display: flex; 
-            list-style: none; 
-            gap: 15px; 
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 15px;
         }
-        .nav-links a { 
-            color: #ddd; 
-            text-decoration: none; 
-            font-size: 0.9rem; 
+        .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
-        .nav-links a:hover { 
-            color: #fff; 
+        .nav-links a:hover {
+            color: #fff;
         }
 
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
     </style>
 </head>
+
 <body>
 
     <!-- 상단 GNB -->
@@ -98,13 +108,13 @@
         <div class="nav-right">
             <ul class="nav-links">
                 {% if session and session.get('user_id') %}
-                    <li><span>{{ session.get('user_name') }}님</span></li>
-                    <li><a href="{{ url_for('main.my_orders') }}">내 예매 내역</a></li>
-                    <li><a href="#">로그아웃</a></li>
+                <li><span>{{ session.get('user_name') }}님</span></li>
+                <li><a href="{{ url_for('main.my_orders') }}">내 예매 내역</a></li>
+                <li><a href="#">로그아웃</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('main.login') }}">로그인</a></li>
-                    <li><a href="{{ url_for('main.register') }}">회원가입</a></li>
-                    <li><a href="{{ url_for('main.my_orders') }}">내 예매 내역</a></li>
+                <li><a href="{{ url_for('main.login') }}">로그인</a></li>
+                <li><a href="{{ url_for('main.register') }}">회원가입</a></li>
+                <li><a href="{{ url_for('main.my_orders') }}">내 예매 내역</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -112,8 +122,39 @@
 
     <!-- 메인 컨텐츠 영역 -->
     <main class="container">
+        <!-- 장르별 공통 내비게이션 탭 -->
+        <div
+            style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">
+            <!-- 1. 전체 -->
+            <a href="{{ url_for('main.all_performances') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.all_performances' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.all_performances' else '#333' }};">
+                전체
+            </a>
+
+            <!-- 2. 뮤지컬 -->
+            <a href="{{ url_for('main.musical_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.musical_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.musical_list' else '#333' }};">
+                뮤지컬
+            </a>
+
+            <!-- 3. 연극 -->
+            <a href="{{ url_for('main.play_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.play_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.play_list' else '#333' }};">
+                연극
+            </a>
+
+            <!-- 4. 콘서트 -->
+            <a href="{{ url_for('main.concert_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.concert_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.concert_list' else '#333' }};">
+                콘서트
+            </a>
+        </div>
         {% block content %}
-        
+
         {% endblock %}
     </main>
     {% include "footer.html" %}

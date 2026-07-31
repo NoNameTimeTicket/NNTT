@@ -3,14 +3,16 @@
 {% block title %}메인 - NNTT 통합 예매{% endblock %}
 
 {% block content %}
-    <!-- 장르별 탭 -->
-    <div style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">
-        <a href="{{ url_for('main.index', genre='all') }}" style="text-decoration: none; padding: 8px 16px; background-color: #333; color: white; border-radius: 20px;">전체</a>
-        <a href="{{ url_for('main.index', genre='musical') }}" style="text-decoration: none; padding: 8px 16px; background-color: #eee; color: #333; border-radius: 20px;">뮤지컬</a>
-        <a href="{{ url_for('main.index', genre='play') }}" style="text-decoration: none; padding: 8px 16px; background-color: #eee; color: #333; border-radius: 20px;">연극</a>
-        <a href="{{ url_for('main.index', genre='concert') }}" style="text-decoration: none; padding: 8px 16px; background-color: #eee; color: #333; border-radius: 20px;">콘서트</a>
-    </div>
+    <!-- 
+    Todo: 공연목록 figma에서 계획한 index.html 부분 구현하기 (start)
+        배너-1(크게)
+        장르별버튼
+        오픈예정
+        배너-2(작게)
+        랭킹 - 최근 일주일 순으로 얻어오기, ntssnmrssm
+     -->
 
+    <!-- 테스트용이므로 삭제 후 진행해주세요 (start) -->
     <h2>공연 목록</h2>
     
     <!-- 공연 카드 카드 그리드 레이아웃 -->
@@ -22,4 +24,7 @@
             <a href="{{ url_for('main.performance_detail', perf_id=1) }}" style="display: inline-block; padding: 6px 12px; background: #ff4757; color: white; text-decoration: none; border-radius: 4px; margin-top: 10px;">상세보기 및 예매</a>
         </div>
     </div>
+    <!-- 테스트용이므로 삭제 후 진행해주세요 () -->
+
+    <!-- Todo: 공연목록 figma에서 계획한 index.html 부분 구현하기 (end) -->
 {% endblock %}
