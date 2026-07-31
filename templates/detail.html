@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}공연 상세 - NNTT{% endblock %}
+
+{% block content %}
+    <h2>공연 상세 정보 (ID: {{ perf_id }})</h2>
+    
+    <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #ddd;">
+        <h3>공연 제목 예시</h3>
+        <p style="margin-top: 10px;">공연 설명 및 관람 정보가 위치하는 자리입니다.</p>
+        
+        <!-- 회차 예매 모달 열기 버튼 -->
+        <button onclick="alert('회차 예매 모달 팝업 실행 영역')" style="margin-top: 20px; padding: 10px 20px; background-color: #ff4757; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            회차 선택 및 예매하기
+        </button>
+    </div>
+
+    <!-- 공연 후기 게시판 영역 -->
+    <div style="margin-top: 40px;">
+        <h3>공연 후기 게시판</h3>
+        <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+            <p><strong>user01</strong>: 연출이 정말 훌륭했습니다! ⭐⭐⭐⭐⭐</p>
+        </div>
+    </div>
+{% endblock %}
