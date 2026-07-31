@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}내 예매 내역 - NNTT{% endblock %}
+
+{% block content %}
+    <h2>내 예매 내역 목록</h2>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white;">
+        <thead>
+            <tr style="background-color: #f4f4f4; text-align: left;">
+                <th style="padding: 12px; border-bottom: 2px solid #ddd;">예매 번호</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ddd;">공연명</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ddd;">관람일시</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ddd;">확인증</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">#2026080101</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">뮤지컬 〈NNTT〉</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">2026-08-15 19:00</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                    <!-- 티켓 확인증 모달 버튼 -->
+                    <button onclick="alert('티켓 확인증 모달 팝업 열기')" style="padding: 4px 8px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        티켓 확인증
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
