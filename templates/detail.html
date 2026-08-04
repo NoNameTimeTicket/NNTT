@@ -3,53 +3,61 @@
 {% block title %}{{ performance.title }} - NNTT{% endblock %}
 
 {% block content %}
-<div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 900px; margin: 0 auto; padding: 20px;">
 
     <h2 style="color: #333; margin-bottom: 20px;">공연 상세 정보</h2>
 
-    <!-- 1. 메인 정보 영역 (포스터 + 상세 정보) -->
-    <div style="padding: 25px; background: white; border-radius: 8px; border: 1px solid #ddd; display: flex; gap: 30px; flex-wrap: wrap;">
+    <!-- 1. 메인 정보 영역 (포스터 + 상세 데이터) -->
+    <div style="padding: 25px; background: white; border-radius: 8px; border: 1px solid #ddd; display: flex; gap: 25px; flex-wrap: wrap;">
         
         <!-- 좌측: 포스터 이미지 -->
-        <div style="flex: 0 0 250px;">
+        <div style="flex: 0 0 220px;">
             {% if performance.poster %}
-                <img src="{{ performance.poster }}" alt="{{ performance.title }} 포스터" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <img src="{{ performance.poster }}" alt="{{ performance.title }} 포스터" style="width: 100%; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); object-fit: cover;">
             {% else %}
-                <div style="width: 100%; height: 330px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #888;">포스터 이미지 없음</div>
+                <div style="width: 100%; height: 300px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 6px; color: #888;">포스터 이미지 없음</div>
             {% endif %}
         </div>
 
         <!-- 우측: 상세 데이터 표 -->
-        <div style="flex: 1; min-width: 300px;">
-            <h2 style="margin-top: 0; color: #222; font-size: 1.8em;">{{ performance.title }}</h2>
+        <div style="flex: 1; min-width: 280px;">
+            <h2 style="margin-top: 0; color: #222; font-size: 1.6em;">{{ performance.title }}</h2>
             <p style="color: #888; font-size: 0.85em; margin-bottom: 15px;">공연 ID: {{ performance.perf_id }}</p>
 
             <table style="width: 100%; border-collapse: collapse; line-height: 2;">
                 <tr style="border-bottom: 1px solid #f0f0f0;">
-                    <td style="width: 120px; font-weight: bold; color: #555;">지역</td>
+                    <td style="width: 110px; font-weight: bold; color: #555;">지역</td>
                     <td>{{ performance.area or '정보 없음' }}</td>
                 </tr>
+                
+                <!-- 💡 [수정 1] 상단 공연장 / 위치 안내 (서울특별시 금천구 플렉스라운지 표기) -->
                 <tr style="border-bottom: 1px solid #f0f0f0;">
-                    <td style="font-weight: bold; color: #555; vertical-align: top; padding-top: 6px;">공연시설/장소</td>
+                    <td style="font-weight: bold; color: #555; vertical-align: top; padding-top: 6px;">공연장 / 위치</td>
                     <td style="padding: 6px 0;">
-                        <!-- 공연장명 -->
-                        <div style="font-weight: bold; color: #222; font-size: 1.05em;">{{ performance.facility_name }}</div>
+                        <!-- 주소 유무에 따라 "서울특별시 금천구 OO홀" 또는 "서울 OO홀"로 스마트 표출 -->
+                        <div style="font-weight: bold; color: #222; font-size: 1.05em;">
+                            {{ performance.full_location_name }}
+                        </div>
                         
-                        <!-- 도로명 주소 (있을 경우 출력) -->
                         {% if performance.address %}
-                            <div style="color: #2b6cb0; font-size: 0.9em; margin-top: 2px;">
+                            <div style="color: #0066cc; font-size: 0.9em; margin-top: 2px;">
                                 📍 {{ performance.address }}
+                            </div>
+                        {% else %}
+                            <div style="color: #888; font-size: 0.85em; margin-top: 2px;">
+                                📍 (KOPIS DB에 상세 도로명 주소가 미등록된 공연장입니다)
                             </div>
                         {% endif %}
                         
-                        <!-- 네이버 지도 바로가기 버튼 -->
-                        <a href="https://map.naver.com/v5/search/{{ (performance.address or performance.clean_facility_name) | urlencode }}" 
+                        <!-- 💡 [수정 2] 네이버 지도 버튼 (도로명 주소 우선, 없으면 full_location_name으로 바로 검색) -->
+                        <a href="https://map.naver.com/v5/search/{{ (performance.address or performance.full_location_name) | urlencode }}" 
                            target="_blank" 
-                           style="display: inline-block; margin-top: 6px; padding: 4px 10px; background-color: #03cf5d; color: white; text-decoration: none; border-radius: 4px; font-size: 0.82em; font-weight: bold;">
+                           style="display: inline-block; margin-top: 6px; padding: 4px 10px; background: #03cf5d; color: white; text-decoration: none; border-radius: 4px; font-size: 0.82em; font-weight: bold;">
                             N 네이버 지도로 위치 확인
                         </a>
                     </td>
                 </tr>
+                
                 <tr style="border-bottom: 1px solid #f0f0f0;">
                     <td style="font-weight: bold; color: #555;">공연기간</td>
                     <td>{{ performance.start_date }} ~ {{ performance.end_date }}</td>
@@ -68,14 +76,13 @@
                 </tr>
             </table>
 
-            <!-- 회차 예매 모달 열기 버튼 -->
-            <button onclick="alert('회차 예매 모달 팝업 실행 영역')" style="margin-top: 25px; width: 100%; padding: 12px 0; background-color: #ff4757; color: white; border: none; border-radius: 4px; font-size: 1em; font-weight: bold; cursor: pointer;">
+            <button onclick="alert('회차 선택 및 예매 팝업 영역입니다.')" style="margin-top: 20px; width: 100%; padding: 12px 0; background-color: #ff4757; color: white; border: none; border-radius: 4px; font-size: 1em; font-weight: bold; cursor: pointer;">
                 회차 선택 및 예매하기
             </button>
         </div>
     </div>
 
-    <!-- 2. 줄거리 / 공연 소개 & 소개 이미지 -->
+    <!-- 2. 줄거리 / 공연 소개 및 소개 이미지 -->
     <div style="margin-top: 25px; padding: 25px; background: white; border-radius: 8px; border: 1px solid #ddd;">
         <h3 style="border-left: 4px solid #ff4757; padding-left: 10px; margin-top: 0; color: #222;">줄거리 / 공연 소개</h3>
         
@@ -90,26 +97,27 @@
         {% if performance.intro_image1 %}
             <h3 style="border-left: 4px solid #ff4757; padding-left: 10px; margin-top: 35px; color: #222;">소개 이미지</h3>
             <div style="margin-top: 15px; text-align: center;">
-                <img src="{{ performance.intro_image1 }}" alt="공연 소개 이미지 1" style="max-width: 100%; border-radius: 6px; border: 1px solid #eee;">
+                <img src="{{ performance.intro_image1 }}" alt="공연 소개 이미지" style="max-width: 100%; border-radius: 6px; border: 1px solid #eee;">
             </div>
         {% endif %}
     </div>
 
-    <!-- 3. 공연장 위치 안내 박스 (공연장명 + 도로명주소 병기) -->
+    <!-- 💡 [수정 3] 하단 공연장 오시는 길 배너 박스 -->
     <div style="margin-top: 25px; padding: 20px 25px; background: white; border-radius: 8px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <div>
             <h3 style="border-left: 4px solid #ff4757; padding-left: 10px; margin: 0; color: #222;">공연장 오시는 길</h3>
             <p style="margin: 10px 0 0 0; color: #444; line-height: 1.6;">
-                <strong>공연장명:</strong> {{ performance.facility_name }}<br>
+                <!-- 위치 + 공연장명 결합 표기 -->
+                <strong>공연장명:</strong> {{ performance.full_location_name }}<br>
                 {% if performance.address %}
-                    <strong>도로명 주소:</strong> <span style="color: #2b6cb0;">{{ performance.address }}</span>
+                    <strong>도로명 주소:</strong> <span style="color: #0066cc;">{{ performance.address }}</span>
                 {% else %}
                     <small style="color: #888;">상세 도로명 주소 정보가 없습니다.</small>
                 {% endif %}
             </p>
         </div>
         
-        <a href="https://map.naver.com/v5/search/{{ (performance.address or performance.clean_facility_name) | urlencode }}" 
+        <a href="https://map.naver.com/v5/search/{{ (performance.address or performance.full_location_name) | urlencode }}" 
            target="_blank" 
            style="padding: 12px 20px; background-color: #03cf5d; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.95em; display: inline-flex; align-items: center; gap: 6px;">
             <span>N</span> 네이버 지도로 길찾기 ➔
@@ -117,10 +125,10 @@
     </div>
 
     <!-- 4. 공연 후기 게시판 영역 -->
-    <div style="margin-top: 40px;">
-        <h3>공연 후기 게시판</h3>
+    <div style="margin-top: 35px;">
+        <h3>공연 후기</h3>
         <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
-            <p><strong>user01</strong>: 연출이 정말 훌륭했습니다! ⭐⭐⭐⭐⭐</p>
+            <p style="margin: 0;"><strong>user01</strong>: 연출이 정말 훌륭했습니다! ⭐⭐⭐⭐⭐</p>
         </div>
     </div>
 

@@ -86,113 +86,135 @@ def concert_list():
 # 1) 상세페이지 수정 2026-08-04 박근수
 @main_bp.route('/performances/<string:perf_id>')
 def performance_detail(perf_id):
-    #수정버젼 2026-08-04 박근수
-    # 1. KOPIS API URL 및 파라미터 설정
-    url = f"http://www.kopis.or.kr/openApi/restful/pblprfr/{perf_id}"
-    params = {'service' : KOPIS_API_KEY}
-
+    #수정버젼 2026-08-04 박근수, 2026-08-04 간결한 코딩 및 날짜 수정
+    
     try:
-        # 2. API 호출
-        response = requests.get(url, params=params)
+        # 1. 공연 상세 API 호출
+        url = f"http://www.kopis.or.kr/openApi/restful/pblprfr/{perf_id}"
+        res = requests.get(url, params={'service': KOPIS_API_KEY}, timeout=5)
 
-        if response.status_code !=200:
-            abort(500, description="KOPIS API 호출 실패")
+        #2. KOPIS 서버 응답 에러 처리
+        if res.status_code !=200:
+            print(f"[상세 API 호출 실패] 공연 ID: {perf_id} | HTTP 상태 코드: {res.status_code}")
+            abort(500, description="KOPIS API 호출에 실패했습니다.")
 
-        # 3. ElementTree를 활용한 XML 파싱 (외부 라이브러리 미사용)
-        root = ET.fromstring(response.text)
-        db_elem = root.find('db')
+        root = ET.fromstring(res.content)
+        db = root.find('db')
 
-        if db_elem is None:
+        # 3. KOPIS에 해당 공연 정보가 존재하지 않는 경우
+        if db is None:
+            print(f"[상세 조회 실패] 공연 ID: {perf_id} 정보를 데이터베이스에서 찾을 수 없음")
             abort(404, description="해당 공연 정보를 찾을 수 없습니다.")
 
-        # XML 태그 텍스트를 안전하게 가져오는 헬퍼 함수
-        def get_tag_text(tag_name):
-            elem = db_elem.find(tag_name)
-            return elem.text if elem is not None and elem.text else ''
+        #4. XML 태그 안전 추출 헬퍼 함수
+        get_txt = lambda tag: (db.findtext(tag) or '').strip()     
 
-        # 줄거리(sty) 태그 안의 모든 텍스트/HTML을 파싱하는 함수 추가
-        def get_sty_text():
-            sty_elem = db_elem.find('sty')
-            if sty_elem is not None:
-                ## itertext()로 sty 내부 하위 태그들까지 모든 텍스트를 다 합쳐서 가져옴
-                return ''.join(sty_elem.itertext()).strip()
-            return ''
- 
-        # 💡 [추가] 공연시설 ID(fcltyid) 추출 및 시설 상세 API 호출로 주소 가져오기
-        fclty_id = get_tag_text('fcltyid')
-        facility_address = ''
+        # 변수 사전 초기화로 UnboundLocalError 예방
+        address = ''
+        district_location = ''       
 
+
+        # [prfplcDetailRequest] 공연시설 상세 API에서 adres(도로명 주소) 추출
+        fclty_id = get_txt('fcltyid')
+        address = ''
         if fclty_id:
             try:
-                fclty_url = f"http://www.kopis.or.kr/openApi/restful/prfcom/{fclty_id}"
-                fclty_res = requests.get(fclty_url, params={'service': KOPIS_API_KEY}, timeout=3)
-                if fclty_res.satus_code == 200:
-                    fclty_root = ET.fromstring(fclty_res.text)
-                    # KOPIS 시설 상세 XML root의 db 태그 접근
-                    fclty_db =fclty_root.find('db')
-                    if fclty_db is not None:
-                        adres_elem = fclty_db.find('adres')
-                        if adres_elem is not None and adres_elem.text:
-                           facility_address = adres_elem.text.strip()
-            except Exception as fclty_err:
-               print(f"시설 주소 조회 실패: {fclty_err}")
+                f_url = f"http://www.kopis.or.kr/openApi/restful/prfplc/{fclty_id}"
+                f_res = requests.get(f_url, params={'service': KOPIS_API_KEY}, timeout=3)
+                if f_res.status_code == 200:
+                    f_root = ET.fromstring(f_res.content)
 
+                    # [수정] 오타 수정 (fetched_adres로 변수 안전 처리)
+                    fetched_adres =f_root.findtext('.//adres')
+                    if fetched_adres and fetched_adres.strip():
+                        address = fetched_adres.strip()
+                    else:
+                        print(f"[KOPIS DB] 시설 ID({fclty_id})에 등록된 adres(주소)가 비어있음")
+                else:
+                    print(f"[시설 API 응답 오류] HTTP {f_res.status_code}")
+            except Exception as f_err:
+                     print(f"⚠️ 시설 주소 파싱 중 오류: {f_err}")
 
-        # 수정 시설명 괄호 제거 정제 (예: "어울아트센터(구. 대구북구문예회관)..." -> "어울아트센터")
-        raw_facility_name = get_tag_text('fcltynm')
-        clean_name = re.sub(r'\([^)]*\)', '', raw_facility_name)
-        clean_facility_name = re.sub(r'[()\[\]]', '', clean_name).strip()              
-        
+        # [특수 처리] 공연장 명칭 괄호 제거 (네이버 지도 검색 정확도 향상)
+        raw_fac_name = get_txt('fcltynm')
+        fac_name = raw_fac_name
 
-        # 소개이미지 목록 (styurls > styurl) 추출
-        intro_image1 = ''
-        styurls_elem = db_elem.find('styurls')
-        if styurls_elem is not None:
-            first_styurl = styurls_elem.find('styurl')
-            if first_styurl is not None and first_styurl.text:
-                intro_image1 = first_styurl.text
+        # 중복 괄호 문구가 반복될 경우 첫 번째 패턴만 채택
+        if fac_name.count('(') > 1 and ') (' in fac_name:
+            parts = fac_name.split(') (')
+            fac_name = parts[0] + ')'
+      
+        # 순수 정제 공연장명 추출 (괄호 및 잔여 특수문자 전면 제거)
+        temp_name = re.sub(r'[\(\[\{].*?[\)\]\}]', '', fac_name)
+        clean_fac_name = re.sub(r'[()\[\]{}]', '', temp_name).strip()
 
-        # 상세 데이터 매핑
+        # 단어 연속 중복 방지 (예: "플렉스라운지 플렉스라운지" ➔ "플렉스라운지")
+        words = clean_fac_name.split()
+        dedup_words = []
+        for w in words:
+            if not dedup_words or dedup_words[-1] != w:
+                dedup_words.append(w)
+        clean_fac_name = " ".join(dedup_words)
+
+        # [특수 처리] 네이버 지도 검색용 완결 키워드 (지역명 + 정제 공연장명)
+        # KOPIS 도로명 주소가 있는 경우 -> 주소 앞 2단어 (예: "서울특별시 금천구" 또는 "서울특별시 마포구") 추출
+        if address:
+            addr_parts = address.split()
+            if len(addr_parts) >=2:
+                district_location = f"{addr_parts[0]} {addr_parts[1]}"
+            elif len(addr_parts) == 1:
+                district_location = addr_parts[0]
+
+        # KOPIS 도로명 주소가 없는 경우 -> 기본 area 사용 (예: "서울", "대구")
+        if not district_location:
+            district_location = get_txt('area')
+
+        full_location_with_name = f"{district_location} {clean_fac_name}".strip()
+
+        # [특수 처리] 줄거리(sty) 태그 내부 HTML/텍스트 구조 파싱
+        sty_elem = db.find('sty')
+        sty_text = ''.join(sty_elem.itertext()).strip() if sty_elem is not None else ''
+
+        # [특수 처리] 상세 데이터 매핑 (API 태그명 prfpfrom/prfpdfrom 호환)
         performance = {
-            'perf_id': get_tag_text('mt20id'),         # 공연ID
-            'title': get_tag_text('prfnm'),           # 공연명
-            'facility_name': raw_facility_name,       # 화면표기용(원본)
-            'clean_facility_name': clean_facility_name, # 지도 검색 전용 정제 명칭
-            'address': facility_address,              # 도로명 주소
-            'start_date': get_tag_text('prfpfrom'),   # 공연시작일
-            'end_date': get_tag_text('prfpto'),       # 공연종료일
-            'cast': get_tag_text('prfcast'),          # 공연출연진
-            'ticket_price': get_tag_text('pcseguidance'), # 티켓가격
-            'poster': get_tag_text('poster'),         # 포스터이미지경로
-            'sty': get_sty_text(),               # 줄거리
-            'area': get_tag_text('area'),             # 지역
-            'hall_name': get_tag_text('fcltynm'),     # 공연장
-            'dtguidance': get_tag_text('dtguidance'), # 공연시간
-            'intro_image1': intro_image1               # 소개이미지1
+            'perf_id': get_txt('mt20id'),                     # 공연 ID
+            'title': get_txt('prfnm'),                        # 공연명
+            'facility_name': fac_name,                        # 원본 공연장명 (중복 정리본)
+            'clean_facility_name': clean_fac_name,            # 순수 정제 공연장명 (괄호 완벽 제거)                  
+            'full_location_name': full_location_with_name,    #  [신규 추가] 화면 표기용 (예: "서울특별시 금천구 플렉스라운지" 또는 "서울 플렉스라운지")           
+            'map_query': full_location_with_name,             # [신규 추가] 네이버 지도 검색용 키워드
+            'address': address,                               # KOPIS 시설 상세 도로명 주소
+            'start_date': get_txt('prfpfrom') or get_txt('prfpdfrom'),
+            'end_date': get_txt('prfpto') or get_txt('prfpdto'),
+            'cast': get_txt('prfcast'),
+            'ticket_price': get_txt('pcseguidance'),
+            'poster': get_txt('poster'),
+            'sty': sty_text,
+            'area': get_txt('area'),                          # KOPIS 기본 지역명 (예: 서울)
+            'dtguidance': get_txt('dtguidance'),
+            'intro_image1': db.findtext('.//styurl') or ''
         }
 
-#  디버깅용 로그: 콘솔 창에 실제로 어떤 데이터가 들어왔는지 확인합니다.
-        print("\n==========================================")
-        print("=== KOPIS 상세 데이터 매핑 디버깅 결과 ===")
-        print("==========================================")
-        print(f"📌 [공연명]          : {performance.get('title')}")
-        print(f"📌 [공연시설 ID]     : {fclty_id}")
-        print(f"📌 [공연장 원본명]   : {performance.get('facility_name')}")
-        print(f"📌 [공연장 정제명]   : {performance.get('clean_facility_name')} (<- 네이버 지도 검색용)")
-        print(f"📌 [KOPIS 도로명주소]: {performance.get('address') or '❌ 주소 데이터 없음 (시설명으로 대체)'}")
-        print("------------------------------------------")
-        
-        # 전체 딕셔너리 항목 요약 출력 (기존 로직 유지 및 EMPYT 오타 교정)
-        for key, val in performance.items():
-            val_str = str(val) if val else 'EMPTY'
-            print(f"{key:<20}: {val_str[:30]}")
-        print("==========================================\n")
+
+        # 성공 디버그 콘솔 출력
+        print("\n=== KOPIS 상세 데이터 매핑 성공 ===")
+        print(f"📌 [공연명]        : {performance['title']}")
+        print(f"📌 [공연기간]      : {performance['start_date']} ~ {performance['end_date']}")
+        print(f"📌 [공연장 원본명] : {performance['facility_name']}")
+        print(f"📌 [공연장 정제명] : {performance['clean_facility_name']}")
+        print(f"📌 [도로명 주소]   : {performance['address'] or '❌ 주소 데이터 없음 (시설명 대체)'}\n")
 
         return render_template('detail.html', perf_id=perf_id, performance=performance)
-    
+
+    except requests.exceptions.Timeout:
+        # KOPIS 서버 타임아웃 예외 처리
+        print(f"❌ [상세 API 호출 실패] 공연 ID: {perf_id} | KOPIS 서버 응답 시간 초과")
+        abort(500, description="공연 정보 서버 응답 시간이 초과되었습니다.")
     except Exception as e:
-        print(f"공연 상세정보 조회 중 오류 발생: {e}")
-        abort(500, description="공연 정보를 불러오는 중 오류가 발생했습니다.")
+        # 파싱 및 기타 시스템 예외 처리
+        print(f"❌ [상세 API 처리 실패] 공연 ID: {perf_id} | 원인: {e}")
+        abort(500, description="공연 상세 정보를 불러오는 도중 오류가 발생했습니다.")
+
 
 # 3. 회원가입
 @main_bp.route('/register', methods=['GET'])
