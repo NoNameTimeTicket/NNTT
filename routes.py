@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, abort
 import requests, re
 import xml.etree.ElementTree as ET
+from forms import UserCreateForm
 
 main_bp = Blueprint('main', __name__)
 KOPIS_API_KEY = "19fc20e402ce49df83b5d2f6e9d50822"
@@ -194,9 +195,10 @@ def performance_detail(perf_id):
         abort(500, description="공연 정보를 불러오는 중 오류가 발생했습니다.")
 
 # 3. 회원가입
-@main_bp.route('/register')
+@main_bp.route('/register', methods=['GET'])
 def register():
-    return render_template('register.html')
+    form = UserCreateForm() # form 객체를 넘겨주어야 register.html이 정상 렌더링됨
+    return render_template('register.html', form=form)
 
 # 4. 로그인
 @main_bp.route('/login')
