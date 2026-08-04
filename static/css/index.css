@@ -1,0 +1,318 @@
+/* 기본 여백 초기화 */
+/* 스와이퍼 */
+.swiper_banner_main {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-color: #C96F4A;
+    border-radius: 50px;
+    overflow: hidden;
+    margin-top: 50px;
+}
+
+.swiper-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* 스와이퍼 우하단 버튼 */
+.btn-toggle {
+    position: absolute;
+    /* 배너 내부 원하는 위치에 띄우기 위함 */
+    right: 70px;
+    bottom: 0;
+    z-index: 10;
+    /* 슬라이드보다 위에 표시 */
+
+    background-color: #39393982;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    padding-left: 2px;
+
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+
+}
+
+/* 스와이퍼 하단 메뉴 */
+.banner-controls {
+    position: absolute;
+    /* 우측 하단에 고정 */
+    right: 25px;
+    bottom: 20px;
+    z-index: 100;
+    /* 슬라이드보다 무조건 위로 배치 */
+
+    display: flex;
+    /* 숫자와 버튼을 가로로 배치 */
+    align-items: center;
+    /* 수직 가운데 정렬 */
+    gap: 10px;
+    /* 숫자와 버튼 사이 간격 */
+
+    background-color: #39393982;
+    /* 숫자 잘 보이도록 반투명 검은 배경 추가 */
+    padding: 6px 14px;
+    border-radius: 30px;
+}
+
+/* 스와이퍼 페이지 번호 */
+.banner-controls .swiper-pagination {
+    position: static;
+    width: auto;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+
+}
+
+.btn-toggle:hover {
+    background-color: #77767680;
+}
+
+/* 스와이퍼 넘기기 버튼 */
+.swiper_banner_main .swiper-button-prev,
+.swiper_banner_main .swiper-button-next {
+    color: #ffffff;
+    background-color: #39393982;
+    width: 40px;
+    height: 40px;
+    border-radius: 30%;
+}
+
+/* 화살표 아이콘 크기 */
+.swiper_banner_main .swiper-button-prev::after,
+.swiper_banner_main .swiper-button-next::after {
+    transition: opacity 0.2s, transform 0.2s;
+    font-size: 25px;
+}
+
+/* 카테고리 네비 */
+.category-nav {
+    display: flex;
+    gap: 85px;
+    list-style: none;
+    padding: 0;
+    margin-top: 60px;
+    margin-left: 35px;
+}
+
+.category-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    text-decoration: none;
+    color: #333333;
+    transition: all 0.2s ease;
+}
+
+.category-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+
+    padding: 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #6C8E9071;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.category-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.category-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* 오픈예정 */
+.upcoming-name {
+    text-align: center;
+    margin-top: 80px;
+
+    font-size: 30px;
+    font-weight: bold;
+
+}
+
+.all-upcoming {
+    float: right;
+    margin-right: 5px;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* 오픈 예정 배너 */
+.upcoming {
+    display: flex;
+    gap: 25px;
+    margin-top: 50px;
+}
+
+.upcoming-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #6C8E9071;
+    width: 190px;
+    height: 250px;
+    border-radius: 20px;
+}
+
+.upcoming-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-top: 7px;
+    gap: 1px;
+}
+.upcoming-date {
+    font-size: 12px;
+    color: #1b5c2d;
+    font-weight: 450;
+}
+
+.upcoming-title {
+    font-size: 16px;
+    font-weight: bold;
+    
+}
+
+
+/* 미니 배너 */
+.mini-banner {
+    display: grid;
+    grid-template-columns: repeat(3, 300px);
+    /* 1fr(1비율) 크기의 열을 3개 생성 -> 3열 배치 */
+    justify-content: center;
+
+    gap: 20px 70px;
+    margin-top: 100px;
+}
+
+
+.mini-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 300px;
+    height: 80px;
+
+    background-color: #6C8E9071;
+    border-radius: 20px;
+
+}
+/* 장르별 랭킹 */
+.rank-name {
+    text-align: center;
+    margin-top: 100px;
+
+    font-size: 30px;
+    font-weight: bold;
+
+}
+.rank-tabs {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 30px 0;
+    justify-content: center;
+}
+
+.tab-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 40px;
+    width: 80px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #e0e0e0;    
+}
+
+.tab-item:hover {    
+    background-color: #a2a1a1a1;
+}
+.tab-item.active {    
+    background-color: #656565;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.all-rank {
+    float: right;
+    margin-right: 5px;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* 오픈 예정 배너 */
+.rank {
+    display: flex;
+    gap: 25px;
+    margin-top: 60px;
+}
+
+.rank-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #6C8E9071;
+    width: 190px;
+    height: 250px;
+    border-radius: 20px;
+    
+}
+
+.rank-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-top: 7px;
+    gap: 1px;
+}
+.rank-date {
+    font-size: 12px;
+    color: #1b5c2d;
+    font-weight: 450;
+}
+
+.rank-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 100px;
+}
