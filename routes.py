@@ -7,8 +7,9 @@ from forms import UserCreateForm
 main_bp = Blueprint('main', __name__)
 KOPIS_API_KEY = "19fc20e402ce49df83b5d2f6e9d50822"
 
-def get_kopis_performances():
-    """KOPIS API를 호출하여 전체 공연 목록을 가져오는 공통 함수"""
+# def get_kopis_performances(): 2026-08-05 박근수 수정
+def get_kopis_performances(keyword=None, kid=None, shcate=None):
+    """KOPIS API를 호출하여 전체 공연 목록 또는 검색 결과를 가져오는 공통 함수"""
 
     # 오늘 날짜 및 종료일(예: 오늘부터 180일 후) 동적 생성
     today = datetime.now()
@@ -25,6 +26,16 @@ def get_kopis_performances():
         'rows': '50',
         'prfstate': '02'
     }
+
+    # kid 파라미터가 들어오면 요청값에 추가 (아동공연 전용)
+    if kid:
+        params['kid'] = kid
+
+    # 장르코드가 들어오면 요청값에 추가
+    if shcate:
+        params['shcate'] = shcate
+
+    # 2. 검색어(keyword)가 전달되었을 때만 shprfnm 파라미터 추가
     try:
         response = requests.get(url, params=params, timeout=10)
         if response.status_code != 200:
@@ -33,14 +44,22 @@ def get_kopis_performances():
         root = ET.fromstring(response.content)
         performances = []
         for db in root.findall('db'):
+            prfnm = db.findtext('prfnm') or ''
+            area = db.findtext('area') or ''
+
+            # 검색어가 들어온 경우: 공연명(prfnm)에도 없고 지역명(area)에도 없으면 제외
+            if keyword and (keyword.strip() not in prfnm and keyword.strip() not in area):
+               continue
+            
             performances.append({
-                'mt20id': db.findtext('mt20id'),
-                'prfnm': db.findtext('prfnm'),
-                'genrenm': db.findtext('genrenm'),
-                'prfpdfrom': db.findtext('prfpdfrom'),
-                'prfpdto': db.findtext('prfpdto'),
-                'poster': db.findtext('poster'),
-                'fcltynm': db.findtext('fcltynm')
+                'mt20id': db.findtext('mt20id'), # KOPIS 고유 공연 ID
+                'prfnm': prfnm,                  # 공연 제목 (공연명)
+                'genrenm': db.findtext('genrenm'), # 장르명 (예: 뮤지컬, 연극, 콘서트 등
+                'area' : area,                   # 지역명 (예: 서울, 대구, 경기 등)
+                'prfpdfrom': db.findtext('prfpdfrom'), # 공연 시작일 (YYYY.MM.DD)
+                'prfpdto': db.findtext('prfpdto'), # 공연 종료일 (YYYY.MM.DD)
+                'poster': db.findtext('poster'),   # 메인 포스터 이미지 URL
+                'fcltynm': db.findtext('fcltynm')  # 공연장/시설 명칭 (예: 세종문화회관)
             })
         return performances
     except Exception as e:
@@ -48,11 +67,20 @@ def get_kopis_performances():
         return []
 
 # 메인 (통합검색 + 상단 GNB + 장르별 탭 + 공연 목록)
+# 박근수 수정 2026-08-05
 @main_bp.route('/')
 def index():
-    search_query = request.args.get('q', '') # 검색어 수집
+    search_query = request.args.get('q', '').strip() # 검색어 수집
     genre_tab = request.args.get('genre', 'all') # 장르 탭 수집
-    return render_template('index.html', query=search_query, current_genre=genre_tab)
+
+    # 1. 검색어(search_query)를 넣어서 KOPIS API 호출
+    if search_query:
+       performances = get_kopis_performances(keyword=search_query)
+    # 2. search.html에 performances=performances 추가
+       return render_template('search.html', query=search_query, performances=performances)
+
+    # 3. 검색어가 없는 일반 메인 접속 -> index.html 렌더링
+    return render_template('index.html', query='', current_genre=genre_tab)
 
 # 전체 공연 목록 페이지
 @main_bp.route('/performances/all')
@@ -67,13 +95,6 @@ def musical_list():
     musicals = [p for p in all_perfs if p.get('genrenm') == '뮤지컬']
     return render_template('musical.html', performances=musicals)
 
-# 연극 전용 페이지
-@main_bp.route('/performances/play')
-def play_list():
-    all_perfs = get_kopis_performances()
-    plays = [p for p in all_perfs if p.get('genrenm') == '연극']
-    return render_template('play.html', performances=plays)
-
 # 콘서트 목록 페이지
 @main_bp.route('/performances/concert')
 def concert_list():
@@ -81,6 +102,33 @@ def concert_list():
     # KOPIS에서 대중음악/대중콘서트/음악 등으로 들어올 수 있어 포함 여부 체크
     concerts = [p for p in all_perfs if '콘서트' in p.get('genrenm', '') or '음악' in p.get('genrenm', '')]
     return render_template('concert.html', performances=concerts)
+
+# 연극 전용 페이지
+@main_bp.route('/performances/play')
+def play_list():
+    all_perfs = get_kopis_performances()
+    plays = [p for p in all_perfs if p.get('genrenm') == '연극']
+    return render_template('play.html', performances=plays)
+
+# 박근수 추가 2026-08-05
+# 아동/가족 전용 페이지
+@main_bp.route('/performances/kids')
+def kids_list():
+    kids_perfs = get_kopis_performances(kid='Y')
+    return render_template('kids.html', performances=kids_perfs)
+
+# 클래식 전용 페이지 (KOPIS 장르코드 CCCA: 서양음악/클래식)
+@main_bp.route('/performances/classic')
+def classic_list():
+    class_perfs = get_kopis_performances(shcate='CCCA')
+    return render_template('classic.html', performances=class_perfs)
+
+# 전시 전용 페이지 (KOPIS 장르코드 EEEA: 전시)
+@main_bp.route('/performances/exhib')
+def exhib_list():
+    exhib_perfs = get_kopis_performances(shcate='EEEA')
+    return render_template('exhib.html', performances=exhib_perfs)
+
 
 # 2. 공연 상세 (공통 상세페이지 + 회차 예매 모달 + 공연 후기 게시판)
 # 1) 상세페이지 수정 2026-08-04 박근수

@@ -99,7 +99,7 @@
 
             <!-- 로고 바로 옆으로 이동한 통합 검색창 -->
             <form action="{{ url_for('main.index') }}" method="GET" class="search-form">
-                <input type="text" name="q" placeholder="공연명, 출연진 검색" value="{{ query if query else '' }}">
+                <input type="text" name="q" placeholder="공연명, 지역명 검색" value="{{ query if query else '' }}">
                 <button type="submit">검색</button>
             </form>
         </div>
@@ -138,19 +138,41 @@
                   color: {{ 'white' if request.endpoint == 'main.musical_list' else '#333' }};">
                 뮤지컬
             </a>
+            
+            <!-- 3. 콘서트 -->
+            <a href="{{ url_for('main.concert_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.concert_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.concert_list' else '#333' }};">
+                콘서트
+            </a>
 
-            <!-- 3. 연극 -->
+            <!-- 4. 연극 -->
             <a href="{{ url_for('main.play_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
                   background-color: {{ '#333' if request.endpoint == 'main.play_list' else '#eee' }}; 
                   color: {{ 'white' if request.endpoint == 'main.play_list' else '#333' }};">
                 연극
             </a>
 
-            <!-- 4. 콘서트 -->
-            <a href="{{ url_for('main.concert_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.concert_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.concert_list' else '#333' }};">
-                콘서트
+            <!-- 5. 아동/가족 -->
+            <a href="{{ url_for('main.kids_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.kids_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.kids_list' else '#333' }};">
+                아동/가족
+            </a>
+
+            <!-- 6. 클래식 -->
+            <a href="{{ url_for('main.classic_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.classic_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.classic_list' else '#333' }};">
+                클래식
+            </a>
+
+
+            <!-- 7. 전시 -->
+            <a href="{{ url_for('main.exhib_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.exhib_list' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.exhib_list' else '#333' }};">
+                전시
             </a>
         </div>
         {% block content %}
