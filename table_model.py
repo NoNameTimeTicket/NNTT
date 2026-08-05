@@ -5,6 +5,7 @@ from filter.filter_date import format_datetime
 
 address_length = 200
 username_length = 150
+max_string = 200
 
 # 회원 정보
 # username
@@ -13,7 +14,7 @@ username_length = 150
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(username_length), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(max_string), nullable=False) # hashcode로 암호화하는 과정 때문에 여유 buffer 추가
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(20), unique=True, nullable=False)
     address = db.Column(db.String(address_length), nullable=True)
@@ -58,3 +59,21 @@ class Reservation(db.Model):
     reservation_date = db.Column(db.DateTime(), nullable=False)
     # 취소 여부(기본 값= False)
     is_canceled = db.Column(db.Boolean, default=False, nullable=False)
+
+# 공지사항 글 
+class Notice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(max_string), nullable=False)
+    content = db.Column(db.Text(), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('notice_set'))
+
+# 자주 묻는 질문 글
+class FAQ(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(max_string), nullable=False)
+    content = db.Column(db.Text(), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('faq_set'))

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container my-3">
+    
+    <div class="row my-3">
+        <div class="col-6">
+            {% if g.user.username == 'admin' %}
+                <a href="{{ url_for('notice.create') }}" class="btn btn-primary">질문 등록하기</a>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <form method="get" id="searchForm" class="d-flex align-items-center justify-content-end">                    
+                    {# 검색시 페이지를 1페이지 리셋 용 #}
+                    <input type="hidden" id="page" name="page" value="{{ page }}">
+
+                    {# 검색창 id="search_kw" #}
+                    <input type="text" id="search_kw" name="kw" value="{{ kw|default('') }}" class="form-control me-2"
+                        style="width: 430px;" placeholder="공지사항 검색어 입력">
+
+                    {# 검색한 내용을 실행하기 위한 버튼 #}
+                    <button type="button" id="btn_search" class="btn btn-primary text-nowrap">검색</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr class="table-dark">
+                <th>번호</th>
+                <th>글쓴이</th>
+                <th style="width:50%">제목</th>
+                <th>작성일시</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if notice_list %}
+            {% for notice in notice_list.items %} {# notice_list 의 세부 아이템을 for문으로 돌려서 조회한다#}
+            <tr>
+                <td> {# Jinja2 활용. 번호 = 전체 게시물 개수 - (현재 페이지 - 1) X 페이지당 게시물 개수 - 나열 인덱스 #}
+                    {{ notice_list.total - ((notice_list.page - 1) * notice_list.per_page) - loop.index0 }}
+                </td>
+                <td>
+                    {{notice.user.username}}
+                </td>
+                <td>
+                    <a href="{{ url_for('notice.detail', notice_id=notice.id) }}">{{ notice.subject }}</a>
+                </td>
+                <td>
+                    {{ notice.create_date|datetime }}
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="3">공지사항이 없습니다</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <ul class="pagination justify-content-center">
+        {% if notice_list.has_prev %} {# 이전 페이지 사용이 가능한 경우 #}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ notice_list.prev_num }}">이전</a>
+        </li>
+        {% else %} {# 이전 페이지를 이용하지 못하는 경우 #}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+
+        {% for page_num in notice_list.iter_pages() %}
+        {% if page_num %}
+        {% if page_num != notice_list.page %} {# 페이지 리스트에 있지만 현재 보여주고 있지 않는 페이지 #}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+        </li>
+        {% else %} {# 현재 보여주고 있는 페이지 표시 #}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% else %} {# page 번호가 아닌 경우. 생략 기호(...) 부분 #}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">...</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if notice_list.has_next %} {# 다음 페이지를 사용이 가능한 경우 #}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ notice_list.next_num }}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"> {# 다음 페이지 사용이 불가능한 경우 #}
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+    const default_page = 1;
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function (element) {
+        element.addEventListener('click', function () {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('searchForm').submit();
+        });
+    });
+    // 검색버튼
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function () {
+        // 검색 버튼 클릭시 페이지 번호 1로 초기화 
+        document.getElementById('page').value = default_page;
+
+        // 폼을 새로고침(submit) (form 내부의 so와 kw가 함께 전송)
+        document.getElementById('searchForm').submit();
+    });
+</script>
+{% endblock %}

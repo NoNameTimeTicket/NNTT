@@ -1,59 +1,57 @@
+<footer class="footer">
+    <div class="footer-inner">
 
+        <!-- 왼쪽 영역 -->
+        <div class="footer-left">
 
-    <footer class="footer">
-        <div class="footer-inner">
-
-            <!-- 왼쪽 영역 -->
-            <div class="footer-left">
-
-                <div class="footer-logo">
-                    <img src="{{ url_for('static', filename='images/logo_footer_3d.png') }}" alt="로고">
-                </div>
-
-                <div class="footer-contact">
-                    <p class="footer-label">고객센터</p>
-                    <p class="footer-phone">01-123-4567</p>
-                    <p class="footer-time">
-                        평일 00:00~00:00&nbsp;&nbsp;주말 공휴일 휴무
-                    </p>
-                </div>
-
+            <div class="footer-logo">
+                <img src="{{ url_for('static', filename='images/logo_footer_3d.png') }}" alt="로고">
             </div>
 
-            <!-- 오른쪽 메뉴 영역 -->
-            <div class="footer-menu">
-
-                <div class="footer-menu-group">
-                    <h3>SUPPORT</h3>
-
-                    <ul>
-                        <li><a href="#">공지사항</a></li>
-                        <li><a href="#">자주 묻는 질문</a></li>
-                        <li><a href="#">1:1문의</a></li>
-                    </ul>
-                </div>
-                    <div class="divider-line"></div>
-
-                <div class="footer-menu-group">
-                    <h3>POLICY</h3>
-
-                    <ul>
-                    <li>
-                        <a href="{{ url_for('main.terms') }}" target="_blank" rel="noopener noreferrer">
-                            이용약관
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ url_for('main.privacy') }}" target="_blank" rel="noopener noreferrer">
-                            개인정보처리방침
-                        </a>
-                    </li>
-                    </ul>
-                </div>
-
+            <div class="footer-contact">
+                <p class="footer-label">고객센터</p>
+                <p class="footer-phone">01-123-4567</p>
+                <p class="footer-time">
+                    평일 00:00~00:00&nbsp;&nbsp;주말 공휴일 휴무
+                </p>
             </div>
 
         </div>
-    </footer>
+
+        <!-- 오른쪽 메뉴 영역 -->
+        <div class="footer-menu">
+
+            <div class="footer-menu-group">
+                <h3>SUPPORT</h3>
+
+                <ul>
+                    <li><a href="{{ url_for('notice._list') }}">공지사항</a></li>
+                    <li><a href="{{ url_for('faq._list') }}">자주 묻는 질문</a></li>
+                    <li><a href="#">1:1문의</a></li>
+                </ul>
+            </div>
+                <div class="divider-line"></div>
+
+            <div class="footer-menu-group">
+                <h3>POLICY</h3>
+
+                <ul>
+                <li>
+                    <a href="{{ url_for('main.terms') }}" target="_blank" rel="noopener noreferrer">
+                        이용약관
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('main.privacy') }}" target="_blank" rel="noopener noreferrer">
+                        개인정보처리방침
+                    </a>
+                </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</footer>
 
