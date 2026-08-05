@@ -68,3 +68,12 @@ class Notice(db.Model):
     create_date = db.Column(db.DateTime(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('notice_set'))
+
+# 자주 묻는 질문 글
+class FAQ(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(max_string), nullable=False)
+    content = db.Column(db.Text(), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('faq_set'))

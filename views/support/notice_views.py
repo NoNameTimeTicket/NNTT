@@ -88,7 +88,6 @@ def delete(notice_id):
         db.session.delete(notice)
         db.session.commit()
     else:
-        print("quatro")
         flash('삭제권한이 없습니다')
         return redirect(url_for('notice.detail', notice_id=notice_id))
     return redirect(url_for('notice._list'))
