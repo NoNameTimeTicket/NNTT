@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>서비스 이용약관</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/service_policy.css') }}">
+</head>
+
+<body>
+
+    <div class="policy-page">
+
+        <!-- 상단 로고 영역 -->
+        <header class="policy-header">
+
+            <a href="{{ url_for('main.index') }}" class="policy-logo">
+
+                <img src="{{ url_for('static', filename='images/logo_main.png') }}" alt="NNTT 로고">
+
+            </a>
+
+        </header>
+
+
+        <!-- 약관 전체 내용 -->
+        <main class="policy-container">
+
+            <!-- 페이지 제목 -->
+            <section class="policy-heading">
+
+                <h1 class="policy-title">
+                    서비스 이용약관
+                </h1>
+
+            </section>
+
+
+            <!-- 약관 본문 -->
+            <article class="policy-content">
+
+                <!-- 제1장 -->
+                <section class="policy-chapter">
+
+                    <h2 class="policy-chapter-title">
+                        제1장 총칙
+                    </h2>
+
+
+                    <!-- 제1조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제1조 (목적)
+                        </h3>
+
+                        <p>
+                            이 약관은 회사가 제공하는 서비스의 이용과 관련하여
+                            회사와 이용자 사이의 권리, 의무 및 책임사항을
+                            규정하는 것을 목적으로 합니다.
+                        </p>
+
+                    </section>
+
+
+                    <!-- 제2조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제2조 (용어의 정의)
+                        </h3>
+
+                        <p>
+                            이 약관에서 사용하는 용어의 정의는 다음과 같습니다.
+                        </p>
+
+                        <ol class="policy-list">
+                            <li>
+                                “서비스”란 회사가 제공하는 공연 정보 및
+                                예매 관련 서비스를 말합니다.
+                            </li>
+
+                            <li>
+                                “이용자”란 회사의 서비스를 이용하는
+                                회원 및 비회원을 말합니다.
+                            </li>
+
+                            <li>
+                                “회원”이란 회원가입 절차를 완료하고
+                                회사의 서비스를 이용하는 사람을 말합니다.
+                            </li>
+                        </ol>
+
+                    </section>
+
+
+                    <!-- 제3조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제3조 (약관의 효력 및 변경)
+                        </h3>
+
+                        <ol class="policy-list">
+                            <li>
+                                이 약관은 서비스 화면에 게시하거나
+                                이용자에게 알림으로써 효력이 발생합니다.
+                            </li>
+
+                            <li>
+                                회사는 관련 법령을 위반하지 않는 범위에서
+                                약관을 변경할 수 있습니다.
+                            </li>
+                        </ol>
+
+                    </section>
+
+                </section>
+
+
+                <!-- 제2장 -->
+                <section class="policy-chapter">
+
+                    <h2 class="policy-chapter-title">
+                        제2장 이용계약 및 회원정보
+                    </h2>
+
+
+                    <!-- 제4조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제4조 (이용계약의 성립)
+                        </h3>
+
+                        <ol class="policy-list">
+                            <li>
+                                이용계약은 이용자가 약관에 동의하고
+                                회원가입을 신청한 후 회사가 이를 승인하면
+                                성립합니다.
+                            </li>
+
+                            <li>
+                                회사는 필요한 경우 본인 확인 절차를
+                                요청할 수 있습니다.
+                            </li>
+                        </ol>
+
+                    </section>
+
+
+                    <!-- 제5조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제5조 (회원정보의 관리)
+                        </h3>
+
+                        <p>
+                            회원은 등록한 정보가 변경된 경우 서비스 내
+                            회원정보 수정 기능을 이용하여 해당 정보를
+                            수정해야 합니다.
+                        </p>
+
+                    </section>
+
+                </section>
+
+
+                <!-- 제3장 -->
+                <section class="policy-chapter">
+
+                    <h2 class="policy-chapter-title">
+                        제3장 서비스 이용
+                    </h2>
+
+
+                    <!-- 제6조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제6조 (서비스의 내용)
+                        </h3>
+
+                        <p>
+                            회사가 제공하는 서비스의 내용은 다음과 같습니다.
+                        </p>
+
+                        <ol class="policy-list">
+                            <li>공연 및 전시 정보 제공</li>
+                            <li>공연 일정 및 잔여 좌석 정보 제공</li>
+                            <li>공연 예매 및 예매 내역 관리</li>
+                            <li>이용자 맞춤형 공연 추천</li>
+                            <li>그 밖에 회사가 정하는 관련 서비스</li>
+                        </ol>
+
+                    </section>
+
+
+                    <!-- 제7조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제7조 (서비스의 이용시간)
+                        </h3>
+
+                        <p>
+                            서비스는 회사의 업무상 또는 기술상 특별한 사유가
+                            없는 한 연중무휴로 제공하는 것을 원칙으로 합니다.
+                        </p>
+
+                    </section>
+
+
+                    <!-- 제8조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제8조 (서비스의 변경 및 중단)
+                        </h3>
+
+                        <ol class="policy-list">
+                            <li>
+                                회사는 운영상 또는 기술상 필요한 경우
+                                서비스의 일부를 변경할 수 있습니다.
+                            </li>
+
+                            <li>
+                                시스템 점검이나 장애가 발생한 경우
+                                서비스가 일시적으로 중단될 수 있습니다.
+                            </li>
+                        </ol>
+
+                    </section>
+
+                </section>
+
+
+                <!-- 제4장 -->
+                <section class="policy-chapter">
+
+                    <h2 class="policy-chapter-title">
+                        제4장 공연 예매 및 취소
+                    </h2>
+
+
+                    <!-- 제9조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제9조 (공연 예매)
+                        </h3>
+
+                        <p>
+                            공연 예매와 관련된 내용이 들어가는 영역입니다.
+                        </p>
+
+                    </section>
+
+
+                    <!-- 제10조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제10조 (예매 취소 및 환불)
+                        </h3>
+
+                        <p>
+                            예매 취소와 환불에 관한 기준 및 절차가
+                            들어가는 영역입니다.
+                        </p>
+
+                    </section>
+
+                </section>
+
+
+                <!-- 제5장 -->
+                <section class="policy-chapter">
+
+                    <h2 class="policy-chapter-title">
+                        제5장 회사와 이용자의 의무
+                    </h2>
+
+
+                    <!-- 제11조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제11조 (회사의 의무)
+                        </h3>
+
+                        <p>
+                            회사의 서비스 운영과 관련된 의무가 들어가는
+                            영역입니다.
+                        </p>
+
+                    </section>
+
+
+                    <!-- 제12조 -->
+                    <section class="policy-article">
+
+                        <h3 class="policy-article-title">
+                            제12조 (이용자의 의무)
+                        </h3>
+
+                        <ol class="policy-list">
+                            <li>타인의 정보를 도용해서는 안 됩니다.</li>
+                            <li>서비스의 정상적인 운영을 방해해서는 안 됩니다.</li>
+                            <li>관련 법령과 약관을 준수해야 합니다.</li>
+                        </ol>
+
+                    </section>
+
+                </section>
+
+
+                <!-- 부칙 -->
+                <section class="policy-chapter policy-addendum">
+
+                    <h2 class="policy-chapter-title">
+                        부칙
+                    </h2>
+
+                    <section class="policy-article">
+
+                        <p>
+                            이 약관은 2026년 00월 00일부터 시행합니다.
+                        </p>
+
+                    </section>
+                    
+
+                </section>
+                
+            </article>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,378 @@
+@charset "UTF-8";
+
+
+/* 기본 설정 */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    background-color: #ffffff;
+    color: #333333;
+    font-family:
+        "Noto Sans KR",
+        "Malgun Gothic",
+        Arial,
+        sans-serif;
+    line-height: 1.75;
+    word-break: keep-all;
+}
+
+
+/* 전체 페이지 */
+.policy-page {
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+/* 상단 로고 */
+.policy-header {
+    width: 100%;
+    height: 72px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.policy-header {
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.policy-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.policy-logo img {
+    display: block;
+    height: 42px;
+    width: auto;
+}
+
+
+/* 약관 중앙 영역 */
+.policy-container {
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 64px 40px 120px;
+}
+
+
+/* 페이지 제목 */
+.policy-heading {
+    padding-bottom: 38px;
+    border-bottom: 2px solid #222222;
+}
+
+.policy-title {
+    margin: 0;
+    color: #111111;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.04em;
+}
+
+
+/* 약관 본문 */
+.policy-content {
+    padding-top: 54px;
+    color: #555555;
+    font-size: 15px;
+}
+
+
+/* 장 */
+.policy-chapter {
+    margin-top: 72px;
+}
+
+.policy-chapter:first-child {
+    margin-top: 0;
+}
+
+.policy-chapter-title {
+    margin: 0 0 36px;
+    color: #111111;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+}
+
+
+/* 조 */
+.policy-article {
+    margin-top: 38px;
+}
+
+.policy-chapter-title + .policy-article {
+    margin-top: 0;
+}
+
+.policy-article-title {
+    margin: 0 0 14px;
+    color: #222222;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.policy-article p {
+    margin: 0;
+}
+
+
+/* 번호 목록 */
+.policy-list {
+    margin: 12px 0 0;
+    padding-left: 22px;
+}
+
+.policy-list li {
+    margin-top: 8px;
+    padding-left: 5px;
+}
+
+.policy-list li:first-child {
+    margin-top: 0;
+}
+
+
+/* 부칙 */
+.policy-addendum {
+    margin-top: 80px;
+    padding-top: 44px;
+    border-top: 1px solid #dddddd;
+}
+
+
+/* 모바일 */
+@media (max-width: 767px) {
+
+    .policy-header {
+        height: 60px;
+        padding: 0 20px;
+    }
+
+    .policy-logo {
+        font-size: 21px;
+    }
+
+    .policy-container {
+        max-width: none;
+        padding: 42px 20px 80px;
+    }
+
+    .policy-heading {
+        padding-bottom: 26px;
+    }
+
+    .policy-title {
+        font-size: 26px;
+    }
+
+    .policy-content {
+        padding-top: 38px;
+        font-size: 14px;
+    }
+
+    .policy-chapter {
+        margin-top: 56px;
+    }
+
+    .policy-chapter-title {
+        margin-bottom: 28px;
+        font-size: 20px;
+    }
+
+    .policy-article {
+        margin-top: 32px;
+    }
+
+    .policy-article-title {
+        font-size: 16px;
+    }
+
+    .policy-list {
+        padding-left: 20px;
+    }
+
+    .policy-addendum {
+        margin-top: 64px;
+        padding-top: 36px;
+    }
+}
+
+/* 개인정보 처리방침 안내문 */
+.policy-intro {
+    margin-bottom: 56px;
+    padding: 26px 28px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+}
+
+.policy-intro p {
+    margin: 10px 0 0;
+}
+
+.policy-intro p:first-child {
+    margin-top: 0;
+}
+
+
+/* 조항 내부 소제목 */
+.policy-subtitle {
+    margin: 28px 0 10px;
+    color: #333333;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.policy-article-title + .policy-subtitle {
+    margin-top: 0;
+}
+
+.policy-article p + p {
+    margin-top: 12px;
+}
+
+.policy-article .policy-list + p,
+.policy-article .policy-table-wrap + p {
+    margin-top: 22px;
+}
+
+
+/* 표 */
+.policy-table-wrap {
+    width: 100%;
+    margin: 22px 0;
+    overflow-x: auto;
+}
+
+.policy-table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    border-top: 1px solid #555555;
+    font-size: 14px;
+}
+
+.policy-table th,
+.policy-table td {
+    padding: 14px 16px;
+    border-right: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+    vertical-align: top;
+}
+
+.policy-table th:last-child,
+.policy-table td:last-child {
+    border-right: 0;
+}
+
+.policy-table thead th {
+    background-color: #f5f6f7;
+    color: #222222;
+    font-weight: 600;
+}
+
+.policy-table tbody td {
+    background-color: #ffffff;
+}
+
+
+/* 개인정보 담당자 영역 */
+.policy-contact-box {
+    margin: 20px 0 24px;
+    padding: 22px 24px;
+    background-color: #f7f8fa;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+}
+
+.policy-contact-list {
+    margin: 0;
+}
+
+.policy-contact-list > div {
+    display: flex;
+    margin-top: 10px;
+}
+
+.policy-contact-list > div:first-child {
+    margin-top: 0;
+}
+
+.policy-contact-list dt {
+    flex: 0 0 170px;
+    color: #222222;
+    font-weight: 600;
+}
+
+.policy-contact-list dd {
+    margin: 0;
+}
+
+
+/* 보충 안내 */
+.policy-note {
+    color: #777777;
+    font-size: 13px;
+}
+
+
+/* 시행일 */
+.policy-date-list {
+    margin-top: 0;
+}
+
+
+/* 화면에는 숨기고 접근성은 유지 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+@media (max-width: 767px) {
+
+    .policy-intro {
+        margin-bottom: 42px;
+        padding: 20px;
+    }
+
+    .policy-subtitle {
+        margin-top: 24px;
+        font-size: 14px;
+    }
+
+    .policy-contact-list > div {
+        display: block;
+    }
+
+    .policy-contact-list dt {
+        margin-bottom: 2px;
+    }
+
+    .policy-contact-list dd {
+        color: #555555;
+    }
+}

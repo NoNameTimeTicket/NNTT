@@ -231,3 +231,13 @@ def login():
 @main_bp.route('/mypage/orders')
 def my_orders():
     return render_template('orders.html')
+
+# 6. term n condition 과 policy
+@main_bp.route('/terms')
+def terms():
+    return render_template('termsNconditions.html')
+
+
+@main_bp.route('/privacy')
+def privacy():
+    return render_template('privacy_policy.html')
