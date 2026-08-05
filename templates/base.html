@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block style %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    {% endblock %}
     <link rel="stylesheet"
       href="{{ url_for('static', filename='css/footer.css') }}">
     <title>{% block title %}NNTT 공연 예매{% endblock %}</title>
@@ -180,5 +184,17 @@
         {% endblock %}
     </main>
     {% include "footer.html" %}
+        
+    <script type='text/javascript'>
+        // 공지사항, 자주묻는질문 삭제 리스너 추가
+        const delete_elements = document.getElementsByClassName("delete_notice");
+        Array.from(delete_elements).forEach(function(element){
+            element.addEventListener('click', function(){
+                if(confirm("정말로 삭제하시겠습니까?")) {
+                    location.href = this.dataset.uri;
+                };
+            });
+        });
+    </script>
 </body>
 </html>
