@@ -286,16 +286,12 @@ def my_orders():
 def terms():
     return render_template('termsNconditions.html')
 
-
+# 개인정보처리방침
 @main_bp.route('/privacy')
 def privacy():
     return render_template('privacy_policy.html')
 
-# 7. 1:1 문의
-@main_bp.route('/customer/inquiry', methods=['GET', 'POST'])
+# 1:1 문의
+@main_bp.route('/inquiry')
 def inquiry():
-
-    if request.method == 'POST':
-        return render_template('inquiry.html')
-
     return render_template('inquiry.html')
