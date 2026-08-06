@@ -4,7 +4,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
 <!-- 스와이퍼 -->
 <div class="main-banner-container">
@@ -94,109 +94,70 @@
 </ul>
 
 <div class="category-upcoming">
+
     <h2 class="upcoming-name">오픈예정</h2>
-    <a href="#" class="all-upcoming">전체보기</a>
+    <a href="{{ url_for('main.upcoming_performances') }}" class="all-upcoming">전체보기</a>
 
-    <div class="upcoming">
-        
-        <div class="upcoming-item">
-            <a href="#" class="upcoming-list">배너 1</a>
-            <div class="upcoming-info">
-                <span class="upcoming-date">날짜</span>
-                <span class="upcoming-title">제목</span>
-            </div>
-        </div>
-        <div class="upcoming-item">
-            <a href="#" class="upcoming-list">배너 2</a>
-            <div class="upcoming-info">
-                <span class="upcoming-date">날짜</span>
-                <span class="upcoming-title">제목</span>
-            </div>
-        </div>
-        <div class="upcoming-item">
-            <a href="#" class="upcoming-list">배너 3</a>
-            <div class="upcoming-info">
-                <span class="upcoming-date">날짜</span>
-                <span class="upcoming-title">제목</span>
-            </div>
-        </div>
-        <div class="upcoming-item">
-            <a href="#" class="upcoming-list">배너 4</a>
-            <div class="upcoming-info">
-                <span class="upcoming-date">날짜</span>
-                <span class="upcoming-title">제목</span>
-            </div>
-        </div>
-        <div class="upcoming-item">
-            <a href="#" class="upcoming-list">배너 5</a>
-            <div class="upcoming-info">
-                <span class="upcoming-date">날짜</span>
-                <span class="upcoming-title">제목</span>
-            </div>
-        </div>
-    </div>
 
-    <div class="mini-banner">
-        <a href="#" class="mini-list">배너1</a>
-        <a href="#" class="mini-list">배너2</a>
-        <a href="#" class="mini-list">배너3</a>
-        <a href="#" class="mini-list">배너4</a>
-        <a href="#" class="mini-list">배너5</a>
-        <a href="#" class="mini-list">배너6</a>
+
+    <div class="upcoming" id="upcoming-container">
+        {% if performances %}
+        {% for perf in performances %}
+        <!-- 카드 단위 반복 -->
+        <div class="upcoming-card">
+            <a href="{{ url_for('main.performance_detail', perf_id=perf.mt20id) }}"
+                style="text-decoration: none; color: inherit;">
+
+                <!-- 포스터 영역 -->
+                <div class="upcoming-list">
+                    {% if perf.poster %}
+                    <img src="{{ perf.poster }}" alt="{{ perf.prfnm }}">
+                    {% else %}
+                    <span>포스터 없음</span>
+                    {% endif %}
+                </div>
+
+                <!-- 하단 정보 영역 -->
+                <div class="upcoming-info">
+                    <span class="upcoming-date">{{ perf.prfpdfrom }} ~ {{ perf.prfpdto }}</span>
+                    <span class="upcoming-title">{{ perf.prfnm }}</span>
+                </div>
+
+            </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="loading-text">오픈 예정 공연을 불러오는 중입니다...</p>
+        {% endif %}
     </div>
 </div>
 
-<div class="category-rank">
-    <h2 class="rank-name">장르별 랭킹</h2>
-    <a href="#" class="all-rank">전체보기</a>
+<div class="mini-banner">
+    <a href="#" class="mini-list">배너1</a>
+    <a href="#" class="mini-list">배너2</a>
+    <a href="#" class="mini-list">배너3</a>
+    <a href="#" class="mini-list">배너4</a>
+    <a href="#" class="mini-list">배너5</a>
+    <a href="#" class="mini-list">배너6</a>
+</div>
 
-    <ul class="rank-tabs">
-        <li class="tab-item active" data-genre="all">전체</li>
-        <li class="tab-item" data-genre="musical">뮤지컬</li>
-        <li class="tab-item" data-genre="concert">콘서트</li>
-        <li class="tab-item" data-genre="theater">연극</li>
-        <li class="tab-item" data-genre="kids_n">아동/가족</li>
-    </ul>
-
-    <div class="rank">
-        <div class="rank-item" data-genre="all">
-            <a href="#" class="rank-list">배너 1</a>
-            <div class="rank-info">
-                <span class="rank-date">날짜</span>
-                <span class="rank-title">장르 제목</span>
-            </div>
-        </div>
-        <div class="rank-item" data-genre="musical">
-            <a href="#" class="rank-list">배너 2</a>
-            <div class="rank-info">
-                <span class="rank-date">날짜</span>
-                <span class="rank-title">장르 제목</span>
-            </div>
-        </div>
-        <div class="rank-item" data-genre="concert">
-            <a href="#" class="rank-list">배너 3</a>
-            <div class="rank-info">
-                <span class="rank-date">날짜</span>
-                <span class="rank-title">장르 제목</span>
-            </div>
-        </div>
-        <div class="rank-item" data-genre="theater">
-            <a href="#" class="rank-list">배너 4</a>
-            <div class="rank-info">
-                <span class="rank-date">날짜</span>
-                <span class="rank-title">장르 제목</span>
-            </div>
-        </div>
-        <div class="rank-item" data-genre="kids_n">
-            <a href="#" class="rank-list">배너 5</a>
-            <div class="rank-info">
-                <span class="rank-date">날짜</span>
-                <span class="rank-title">장르 제목</span>
-            </div>
-        </div>
+<div class="category-price">
+    <div class="price-header">
+        <h2 class="price-name">예산에 맞는 티켓</h2>
+        <ul class="price-tabs">
+            <li class="tab-item active" data-price="10k">1만원 이하</li>
+            <li class="tab-item" data-price="10k-30k">1만원~3만원</li>
+            <li class="tab-item" data-price="30k">3만원 이상</li>
+        </ul>
     </div>
+
+    <!-- 카드가 동적으로 주입될 컨테이너 -->
+    <div class="price" id="price-container">
+        <p class="loading-text">티켓 정보를 불러오는 중입니다...</p>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="/static/js/index.js"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}

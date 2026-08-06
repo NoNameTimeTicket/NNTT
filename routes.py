@@ -1,15 +1,16 @@
 from datetime import datetime, timedelta
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, jsonify
 import requests, re
 import xml.etree.ElementTree as ET
 from forms import UserCreateForm
 from flask import render_template, request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 main_bp = Blueprint('main', __name__)
 KOPIS_API_KEY = "19fc20e402ce49df83b5d2f6e9d50822"
 
-# def get_kopis_performances(): 2026-08-05 박근수 수정
-def get_kopis_performances(keyword=None, kid=None, shcate=None):
+# def get_kopis_performances():
+def get_kopis_performances(prfstate='02', rows='50', keyword=None, kid=None, shcate=None):
     """KOPIS API를 호출하여 전체 공연 목록 또는 검색 결과를 가져오는 공통 함수"""
 
     # 오늘 날짜 및 종료일(예: 오늘부터 180일 후) 동적 생성
@@ -24,10 +25,9 @@ def get_kopis_performances(keyword=None, kid=None, shcate=None):
         'stdate': stdate_str,
         'eddate': eddate_str,
         'cpage': '1',
-        'rows': '50',
-        'prfstate': '02'
+        'rows': str(rows),
+        'prfstate': prfstate
     }
-
     # kid 파라미터가 들어오면 요청값에 추가 (아동공연 전용)
     if kid:
         params['kid'] = kid
@@ -36,7 +36,7 @@ def get_kopis_performances(keyword=None, kid=None, shcate=None):
     if shcate:
         params['shcate'] = shcate
 
-    # 2. 검색어(keyword)가 전달되었을 때만 shprfnm 파라미터 추가
+    # 검색어(keyword)가 전달되었을 때만 shprfnm 파라미터 추가
     try:
         response = requests.get(url, params=params, timeout=10)
         if response.status_code != 200:
@@ -48,10 +48,10 @@ def get_kopis_performances(keyword=None, kid=None, shcate=None):
             prfnm = db.findtext('prfnm') or ''
             area = db.findtext('area') or ''
 
-            # 검색어가 들어온 경우: 공연명(prfnm)에도 없고 지역명(area)에도 없으면 제외
+             # 검색어가 들어온 경우: 공연명(prfnm)에도 없고 지역명(area)에도 없으면 제외
             if keyword and (keyword.strip() not in prfnm and keyword.strip() not in area):
-               continue
-            
+                continue
+
             performances.append({
                 'mt20id': db.findtext('mt20id'), # KOPIS 고유 공연 ID
                 'prfnm': prfnm,                  # 공연 제목 (공연명)
@@ -74,14 +74,47 @@ def index():
     search_query = request.args.get('q', '').strip() # 검색어 수집
     genre_tab = request.args.get('genre', 'all') # 장르 탭 수집
 
-    # 1. 검색어(search_query)를 넣어서 KOPIS API 호출
+    
+    # 검색어(search_query)를 넣어서 KOPIS API 호출    
     if search_query:
-       performances = get_kopis_performances(keyword=search_query)
-    # 2. search.html에 performances=performances 추가
-       return render_template('search.html', query=search_query, performances=performances)
+        performances = get_kopis_performances(keyword=search_query) 
+        # search.html에 performances=performances 추가   
+        return render_template('search.html', query=search_query, performances=performances)
+    
 
-    # 3. 검색어가 없는 일반 메인 접속 -> index.html 렌더링
+    # 검색어가 없는 일반 메인 접속 -> index.html 렌더링    
     return render_template('index.html', query='', current_genre=genre_tab)
+
+def parse_date(perf):
+    """'2026.08.01' 또는 '2026-08-01' 형태의 날짜를 datetime으로 변환하는 함수"""
+    date_str = perf.get('prfpdfrom', '').replace('.', '-').strip()
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return datetime.max
+
+# 💡 공통 데이터 로직 함수 생성
+def get_sorted_upcoming_performances(limit=None):
+    """KOPIS에서 공연 예정 데이터를 가져와 정렬 후 지정된 개수만큼 반환"""
+    raw_perfs = get_kopis_performances(prfstate='01', rows='50')
+    sorted_perfs = sorted(raw_perfs, key=parse_date)
+    
+    if limit:
+        return sorted_perfs[:limit]
+    return sorted_perfs
+
+@main_bp.route('/api/upcoming')
+def api_upcoming_performances():
+    # 공통 함수 사용 (상위 5개만)
+    upcoming_5 = get_sorted_upcoming_performances(limit=5)
+    return jsonify(upcoming_5)
+
+@main_bp.route('/performances/upcoming')
+def upcoming_performances():
+    # 공통 함수 사용 (전체 50개)
+    upcoming_all = get_sorted_upcoming_performances()
+    return render_template('upcoming_list.html', performances=upcoming_all)
+    
 
 # 전체 공연 목록 페이지
 @main_bp.route('/performances/all')
@@ -130,7 +163,6 @@ def exhib_list():
     exhib_perfs = get_kopis_performances(shcate='EEEA')
     return render_template('exhib.html', performances=exhib_perfs)
 
-
 # 2. 공연 상세 (공통 상세페이지 + 회차 예매 모달 + 공연 후기 게시판)
 # 1) 상세페이지 수정 2026-08-04 박근수
 @main_bp.route('/performances/<string:perf_id>')
@@ -161,7 +193,6 @@ def performance_detail(perf_id):
         # 변수 사전 초기화로 UnboundLocalError 예방
         address = ''
         district_location = ''       
-
 
         # [prfplcDetailRequest] 공연시설 상세 API에서 adres(도로명 주소) 추출
         fclty_id = get_txt('fcltyid')
@@ -295,3 +326,81 @@ def privacy():
 @main_bp.route('/inquiry')
 def inquiry():
     return render_template('inquiry.html')
+
+# 가격 별 정보 수집
+def process_single_performance(perf, price_param):
+    """단일 공연 정보를 받아 가격을 파싱하고 조건에 맞는지 검증하는 함수"""
+    perf_id = perf.get('mt20id')
+    if not perf_id:
+        return None
+
+    try:
+        detail_url = f"http://www.kopis.or.kr/openApi/restful/pblprfr/{perf_id}"
+        res = requests.get(detail_url, params={'service': KOPIS_API_KEY}, timeout=2)
+        if res.status_code != 200:
+            return None
+
+        root = ET.fromstring(res.content)
+        db = root.find('db')
+        if db is None:
+            return None
+
+        pcse = (db.findtext('pcseguidance') or '').strip()
+        
+        # '원' 앞의 숫자를 추출
+        raw_prices = re.findall(r'([\d,]+)\s*원', pcse)
+        prices = [int(p.replace(',', '')) for p in raw_prices if int(p.replace(',', '')) >= 1000]
+        min_price = min(prices) if prices else 0
+
+        if min_price == 0:
+            return None
+
+        # 조건 검증
+        is_target = False
+        if price_param == '10k' and min_price <= 10000:
+            is_target = True
+        elif price_param == '10k-30k' and 10000 < min_price < 30000:
+            is_target = True
+        elif price_param == '30k' and min_price >= 30000:
+            is_target = True
+
+        if is_target:
+            poster_url = perf.get('poster', '')
+            if poster_url and not poster_url.startswith('http'):
+                poster_url = f"http://www.kopis.or.kr{poster_url}"
+
+            return {
+                'mt20id': perf_id,
+                'prfnm': perf.get('prfnm'),
+                'prfpd': f"{perf.get('prfpdfrom')} ~ {perf.get('prfpdto')}",
+                'poster': poster_url,
+                'pcse': pcse or f"{min_price:,}원"
+            }
+    except Exception as e:
+        print(f"가격 파싱 오류 ({perf_id}): {e}")
+        return None
+
+@main_bp.route('/api/tickets/price')
+def api_tickets_by_price():
+    price_param = request.args.get('price', '10k')
+    raw_performances = get_kopis_performances(rows='100')
+    filtered_results = []
+
+    # 멀티스레딩 적용 (10개의 스레드로 병렬 처리)
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        # 50개 요청을 작업 큐에 동시에 제출
+        futures = [
+            executor.submit(process_single_performance, perf, price_param) 
+            for perf in raw_performances
+        ]
+        
+        # 완료되는 대로 즉시 수집
+        for future in as_completed(futures):
+            result = future.result()
+            if result:
+                filtered_results.append(result)
+                # 목표 개수(6개)가 채워지면 즉시 중단하여 추가 대기 시간 최소화
+                if len(filtered_results) >= 6:
+                    break
+
+    return jsonify(filtered_results)
