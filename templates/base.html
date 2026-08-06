@@ -173,12 +173,18 @@
                 클래식
             </a>
 
-
             <!-- 7. 전시 -->
             <a href="{{ url_for('main.exhib_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
                   background-color: {{ '#333' if request.endpoint == 'main.exhib_list' else '#eee' }}; 
                   color: {{ 'white' if request.endpoint == 'main.exhib_list' else '#333' }};">
                 전시
+            </a>
+
+            <!-- 8. 오픈예정 -->
+            <a href="{{ url_for('main.upcoming_performances') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
+                  background-color: {{ '#333' if request.endpoint == 'main.upcoming_performances' else '#eee' }}; 
+                  color: {{ 'white' if request.endpoint == 'main.upcoming_performances' else '#333' }};">
+                오픈예정
             </a>
         </div>
         {% block content %}
@@ -199,4 +205,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -43,29 +43,127 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // 장르별 탭
-    const tabItems = document.querySelectorAll('.tab-item');
-    const rankItems = document.querySelectorAll('.rank-item');
 
+    fetch('/api/upcoming')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('upcoming-container');
+            if (!container) return;
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="empty-text">오픈 예정인 공연이 없습니다.</p>';
+                return;
+            }
+
+
+            container.innerHTML = ''; // 로딩 텍스트 제거
+
+            data.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'upcoming-card';
+
+                const posterHtml = item.poster
+                    ? `<img src="${item.poster}" alt="${item.prfnm}">`
+                    : `<span style="color:#888; font-size:12px;">포스터 없음</span>`;
+
+                // 📌 카드 전체를 a태그로 감싸고 포스터와 정보를 포함
+                itemDiv.innerHTML = `
+                <a href="/performances/${item.mt20id}" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                    <div class="upcoming-list">
+                        ${posterHtml}
+                    </div>
+
+                    <div class="upcoming-info">
+                        <span class="upcoming-date">${item.prfpdfrom || ''} ~ ${item.prfpdto || ''}</span>
+                        <span class="upcoming-title">${item.prfnm || ''}</span>
+                    </div>
+                </a>
+                `;
+                container.appendChild(itemDiv);
+            });
+        })
+        .catch(err => {
+            console.error("오픈예정 API 로드 실패:", err);
+            const container = document.getElementById('upcoming-container');
+            if (container) {
+                container.innerHTML = '<p class="error-text">공연 정보를 불러오지 못했습니다.</p>';
+            }
+        });
+
+
+    // 가격대 별 탭
+    const tabItems = document.querySelectorAll('.price-tabs .tab-item');
+    const priceContainer = document.getElementById('price-container');
+    // 불러온 데이터를 저장할 캐시 객체
+    const ticketCache = {};
+
+    async function loadPriceData(priceType = '10k') {
+        if (!priceContainer) return;
+
+        // 이미 불러온 적 있는 데이터라면 캐시에서 가져옴 (서버 요청 생략)
+        if (ticketCache[priceType]) {
+            renderTickets(ticketCache[priceType]);
+            return;
+        }
+
+        priceContainer.innerHTML = '<p class="loading-text">티켓 정보를 불러오는 중입니다...</p>';
+
+        try {
+            const response = await fetch(`/api/tickets/price?price=${priceType}`);
+            if (!response.ok) throw new Error('API 불러오기 실패');
+
+            const performances = await response.json();
+
+            // 서버에서 가져온 데이터를 캐시에 저장
+            ticketCache[priceType] = performances;
+
+            renderTickets(performances);
+
+        } catch (error) {
+            console.error('가격대별 데이터 로딩 오류:', error);
+            priceContainer.innerHTML = '<p class="error-text">정보를 불러오지 못했습니다.</p>';
+        }
+    }
+
+    function renderTickets(performances) {
+        if (!performances || performances.length === 0) {
+            priceContainer.innerHTML = '<p class="empty-text">해당 조건의 티켓이 없습니다.</p>';
+            return;
+        }
+
+        // 백틱(` `)을 사용해 HTML을 한 번에 결합 및 삽입
+        priceContainer.innerHTML = performances.map(perf => `
+                <div class="price-card">
+                    <a href="/performances/${perf.mt20id}" style="text-decoration: none; color: inherit;">
+                        <div class="price-list">
+                            ${perf.poster
+                                ? `<img class="poster-img" src="${perf.poster}" alt="${perf.prfnm || ''}">`
+                                : `<span class="no-poster">포스터 없음</span>`
+                            }        
+                        </div>
+                        <div class="price-info">                            
+                            <span class="price-title">${perf.prfnm || ''}</span>
+                            <span class="price-date">${perf.prfpd || ''}</span>
+                            <span class="price-amount">${perf.pcse || ''}</span>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+    }
+
+    // 탭 클릭 이벤트 연결
     tabItems.forEach(tab => {
-        tab.addEventListener('click', () => {        
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+
             tabItems.forEach(item => item.classList.remove('active'));
             tab.classList.add('active');
 
-            // 장르 값
-            const selectedGenre = tab.getAttribute('data-genre');
-           
-            // 필터링
-            rankItems.forEach(item => {
-                const itemGenre = item.getAttribute('data-genre');
-
-                if (selectedGenre === 'all' || selectedGenre === itemGenre) {                    
-                    item.style.display = 'block';
-                } else {                    
-                    item.style.display = 'none';
-                }
-            });
+            const selectedPrice = tab.dataset.price || '10k';
+            loadPriceData(selectedPrice);
         });
     });
+
+    loadPriceData('10k');
 });
 
