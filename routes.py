@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, abort
 import requests, re
 import xml.etree.ElementTree as ET
 from forms import UserCreateForm
+from flask import render_template, request
 
 main_bp = Blueprint('main', __name__)
 KOPIS_API_KEY = "19fc20e402ce49df83b5d2f6e9d50822"
@@ -289,3 +290,12 @@ def terms():
 @main_bp.route('/privacy')
 def privacy():
     return render_template('privacy_policy.html')
+
+# 7. 1:1 문의
+@main_bp.route('/customer/inquiry', methods=['GET', 'POST'])
+def inquiry():
+
+    if request.method == 'POST':
+        return render_template('inquiry.html')
+
+    return render_template('inquiry.html')

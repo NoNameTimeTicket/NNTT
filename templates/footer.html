@@ -22,31 +22,42 @@
         <div class="footer-menu">
 
             <div class="footer-menu-group">
-                <h3>SUPPORT</h3>
+                <ul>
+                    <li>
+                        <h3>SUPPORT</h3>
+                    </li>
+                </ul>
 
                 <ul>
                     <li><a href="{{ url_for('notice._list') }}">공지사항</a></li>
                     <li><a href="{{ url_for('faq._list') }}">자주 묻는 질문</a></li>
-                    <li><a href="#">1:1문의</a></li>
+                    <li>
+                        <a href="{{ url_for('main.inquiry') }}">
+                            1:1 문의
+                        </a>
                 </ul>
             </div>
-                <div class="divider-line"></div>
+            <div class="divider-line"></div>
 
             <div class="footer-menu-group">
-                <h3>POLICY</h3>
+                <ul>
+                    <li>
+                        <h3>POLICY</h3>
+                    </li>
+                </ul>
 
                 <ul>
-                <li>
-                    <a href="{{ url_for('main.terms') }}" target="_blank" rel="noopener noreferrer">
-                        이용약관
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ url_for('main.terms') }}" target="_blank" rel="noopener noreferrer">
+                            이용약관
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="{{ url_for('main.privacy') }}" target="_blank" rel="noopener noreferrer">
-                        개인정보처리방침
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ url_for('main.privacy') }}" target="_blank" rel="noopener noreferrer">
+                            개인정보처리방침
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -54,4 +65,3 @@
 
     </div>
 </footer>
-
