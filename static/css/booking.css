@@ -1,0 +1,280 @@
+/* C:\projects\NNTT\static\css\booking.css */
+/* 박근수 2026-08-06 */
+
+
+/* 1. 바탕화면 전체 글꼴 및 기본 배경 설정 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 15px;
+}
+
+/* 2. 흰색 메인 팝업 상자 모양 */
+.popup-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 은은한 그림자 효과 */
+}
+
+/* 3. 맨 위 공연 제목 밑에 그어지는 빨간 밑줄 */
+.popup-title {
+    border-bottom: 2px solid #ff4757;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+    color: #2f3542;
+}
+
+/* 4. 왼쪽(달력)과 오른쪽(정보)을 나란히 붙여주는 레이아웃 */
+.popup-body {
+    display: flex;
+    gap: 20px; /* 두 영역 사이의 간격 */
+}
+
+.left-box { flex: 1.1; }  /* 왼쪽 영역을 약간 더 넓게 */
+.right-box { 
+    flex: 0.9; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 14px; /* 오른쪽 항목들 사이의 세로 간격 */
+}
+
+/* =========================================================
+   📆 [왼쪽] 달력 표 디자인
+   ========================================================= */
+.calendar-container {
+    border: 2px solid #ff4757; /* 빨간색 테두리 지정 */
+    border-radius: 10px;
+    padding: 12px;
+    background: #ffffff;
+}
+
+.cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cal-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2d3436;
+}
+
+/* < > 달력 월 이동 버튼 */
+.cal-nav-btn {
+    background: #f1f2f6;
+    border: 1px solid #dfe4ea;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cal-nav-btn:hover {
+    background: #ff4757;
+    color: #ffffff;
+}
+
+/* 7열 바둑판 배열 (일~토) */
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7개 칸으로 균등 분할 */
+    gap: 4px;
+    text-align: center;
+}
+
+.cal-day-header {
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 0;
+    color: #2d3436;
+}
+
+.cal-day-header.sun { color: #ff4757; } /* 일요일 빨간색 */
+.cal-day-header.sat { color: #2ed573; } /* 토요일 초록색 */
+
+/* 날짜 하나하나의 박스 */
+.cal-date {
+    padding: 8px 0;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cal-date:hover:not(.empty):not(.disabled) {
+    background-color: #ffeaa7; /* 마우스 올렸을 때 노란 배경 */
+}
+
+/* 선택된 날짜 (빨간 배경 + 흰 글자) */
+.cal-date.selected {
+    background-color: #ff4757 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+.cal-date.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    text-decoration: line-through; /* 지나간 과거 날짜 취소선 */
+}
+
+.cal-date.empty {
+    cursor: default;
+}
+
+/* =========================================================
+   🌟 [오른쪽] 정보 상자 및 글자 눈에 띄게 만들기
+   ========================================================= */
+
+/* 정보 입력 카드 상자 (예약자ID, 전화번호, 단가 등) */
+.info-item {
+    font-size: 14px;
+    line-height: 1.7;
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e1e8ef;
+    border-left: 5px solid #ff4757; /* 🌟 카드 왼쪽에 강렬한 빨간색 포인트 바 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* 앞에 나오는 항목 이름 (예약자 ID:, 전화번호: 등) -> 차분한 회색 */
+.info-item strong {
+    color: #57606f;
+    font-size: 13px;
+    margin-right: 6px;
+    font-weight: 600;
+}
+
+/* 🌟 [핵심!] 항목 뒤에 붙는 진짜 내용 값들 (아이디, 전화번호, 공연장 이름 등) */
+.info-value {
+    color: #1e272e;      /* 🌟 옅은 회색이 아닌 또렷한 진한 검은색 */
+    font-size: 15px;     /* 🌟 글자 크기를 15px로 확대 */
+    font-weight: 700;    /* 🌟 글씨 굵기를 아주 진하게(Bold) */
+}
+
+/* 🌟 티켓 단가 금액만 빨간색으로 선명하게 포인트 주기 */
+.info-value.price-highlight {
+    color: #ff4757;
+    font-size: 16px;
+}
+
+/* 회차 선택 드롭다운 박스 소제목 */
+.form-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #1e272e;
+}
+
+/* 🌟 회차 선택 드롭다운 클릭 박스 (빨간 테두리 + 연한 크림색 배경) */
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #ff4757;  /* 🌟 테두리를 두껍게 강조 */
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;            /* 🌟 시간 글자 크게 */
+    font-weight: bold;          /* 🌟 진하게 */
+    color: #2f3542;
+    background-color: #fffaf0;  /* 🌟 화사한 배경색 */
+    cursor: pointer;
+    outline: none;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.25);
+}
+
+/* 수량 조절 버튼 (+ / -) 감싸는 상자 */
+.counter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8f9fa;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #dfe4ea;
+    width: fit-content;
+}
+
+/* + / - 개별 버튼 디자인 */
+.btn-count {
+    width: 36px;
+    height: 36px;
+    background: #ffffff;
+    border: 2px solid #ff4757;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff4757;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.btn-count:hover {
+    background: #ff4757;
+    color: #ffffff; /* 마우스 올리면 빨간 배경으로 변경 */
+}
+
+/* 선택한 인원수 숫자 표시 */
+.count-display {
+    font-weight: bold;
+    font-size: 18px;
+    width: 30px;
+    text-align: center;
+    color: #1e272e;
+    display: inline-block;
+}
+
+/* 🌟 최종 결제 금액 박스 (가장 시선이 가는 연분홍 배경) */
+.price-box {
+    background: #fff0f1;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #ffccd2;
+    font-weight: bold;
+    color: #ff4757;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+/* 🌟 최종 결제 금액 숫자를 가장 크고 진하게 표시 */
+.price-box span:last-child {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* 하단 결제 완료 대형 버튼 */
+.btn-pay {
+    width: 100%;
+    padding: 14px;
+    background: #ff4757;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+    transition: background 0.2s ease;
+}
+
+.btn-pay:hover {
+    background: #ff2e43;
+}
