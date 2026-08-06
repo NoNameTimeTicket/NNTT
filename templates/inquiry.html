@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}
+1:1 문의 | NNTT
+{% endblock %}
+
+
+{% block content %}
+
+<section class="inquiry-page">
+
+    <!-- 페이지 제목 -->
+    <div class="inquiry-page-heading">
+
+        <h1>1:1 문의</h1>
+
+        <p>
+            문의 내용을 남겨주시면 확인 후 답변드리겠습니다.
+        </p>
+
+    </div>
+
+
+    <!-- 문의 안내 -->
+    <div class="inquiry-guide">
+
+        <h2>문의 전 확인해 주세요</h2>
+
+        <ul>
+            <li>
+                예매 관련 문의는 예매번호를 함께 입력해 주세요.
+            </li>
+
+            <li>
+                문의 내용에 비밀번호, 카드번호 등 중요한 개인정보를
+                입력하지 마세요.
+            </li>
+
+            <li>
+                문의 답변은 입력한 이메일 또는 연락처로 안내될 수 있습니다.
+            </li>
+        </ul>
+
+    </div>
+
+
+    <!-- 문의 작성 폼 -->
+    <form class="inquiry-form" action="https://formsubmit.co/nntt.official.cs@gmail.com" method="POST" enctype="multipart/form-data">
+
+        <input type="hidden" name="_subject" value="[NNTT] 새로운 1:1 문의가 등록되었습니다.">
+
+        <input type="hidden" name="_template" value="table">
+
+        <input type="hidden" name="_captcha" value="false">
+
+        <input type="text" name="_honey" style="display:none">
+
+        <!-- 문의 유형 -->
+        <div class="form-row">
+
+            <div class="form-label">
+                문의 유형
+                <span class="required">*</span>
+            </div>
+
+            <div class="form-field">
+
+                <select id="inquiry_type" name="inquiry_type" required>
+
+                    <option value="">
+                        문의 유형을 선택해 주세요
+                    </option>
+
+                    <option value="reservation">
+                        예매 문의
+                    </option>
+
+                    <option value="cancel">
+                        예매 취소·환불 문의
+                    </option>
+
+                    <option value="payment">
+                        결제 문의
+                    </option>
+
+                    <option value="performance">
+                        공연 정보 문의
+                    </option>
+
+                    <option value="account">
+                        회원정보 문의
+                    </option>
+
+                    <option value="etc">
+                        기타 문의
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- 예매번호 -->
+        <div class="form-row">
+
+            <label for="order_number" class="form-label">
+                예매번호
+            </label>
+
+            <div class="form-field">
+
+                <input type="text" id="order_number" name="order_number" placeholder="예매 관련 문의인 경우 입력해 주세요">
+
+                <p class="form-help">
+                    예매와 관계없는 문의라면 입력하지 않아도 됩니다.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- 작성자 -->
+        <div class="form-row">
+
+            <label for="writer" class="form-label">
+                작성자
+                <span class="required">*</span>
+            </label>
+
+            <div class="form-field">
+
+                <input type="text" id="writer" name="writer" value="{{ g.user.username if g.user else '' }}"
+                    placeholder="이름을 입력해 주세요" required>
+
+            </div>
+
+        </div>
+
+
+        <!-- 이메일 -->
+        <div class="form-row">
+
+            <label for="email" class="form-label">
+                이메일
+                <span class="required">*</span>
+            </label>
+
+            <div class="form-field">
+
+                <input type="email" id="email" name="email"
+                    value="{{ g.user.email if g.user and g.user.email else '' }}" placeholder="답변받을 이메일을 입력해 주세요"
+                    required>
+
+            </div>
+
+        </div>
+
+
+        <!-- 연락처 -->
+        <div class="form-row">
+
+            <label for="phone" class="form-label">
+                연락처
+            </label>
+
+            <div class="form-field">
+
+                <input type="tel" id="phone" name="phone" placeholder="010-0000-0000">
+
+            </div>
+
+        </div>
+
+
+        <!-- 제목 -->
+        <div class="form-row">
+
+            <label for="subject" class="form-label">
+                제목
+                <span class="required">*</span>
+            </label>
+
+            <div class="form-field">
+
+                <input type="text" id="subject" name="subject" maxlength="100" placeholder="문의 제목을 입력해 주세요" required>
+
+            </div>
+
+        </div>
+
+
+        <!-- 문의 내용 -->
+        <div class="form-row form-row-content">
+
+            <label for="content" class="form-label">
+                문의 내용
+                <span class="required">*</span>
+            </label>
+
+            <div class="form-field">
+
+                <textarea id="content" name="content" rows="14" maxlength="3000" placeholder="문의 내용을 자세히 입력해 주세요"
+                    required></textarea>
+
+                <p class="form-help">
+                    최대 3,000자까지 입력할 수 있습니다.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- 첨부파일 -->
+        <div class="form-row">
+
+            <label for="attachment" class="form-label">
+                첨부파일
+            </label>
+
+            <div class="form-field">
+
+                <input type="file" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.gif,.pdf">
+
+                <p class="form-help">
+                    JPG, JPEG, PNG, GIF, PDF 파일을 첨부할 수 있습니다.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- 개인정보 수집 동의 -->
+        <div class="privacy-agreement">
+
+            <div class="agreement-title">
+                개인정보 수집 및 이용 동의
+            </div>
+
+            <div class="agreement-content">
+
+                <p>
+                    문의 접수 및 답변 처리를 위해 이름, 이메일,
+                    연락처 등의 개인정보를 수집합니다.
+                </p>
+
+                <p>
+                    수집한 개인정보는 문의 처리 완료 후 관련 법령과
+                    내부 방침에 따라 보관 또는 파기합니다.
+                </p>
+
+            </div>
+
+            <div class="agreement-check">
+
+                <label>
+
+                    <input type="checkbox" id="privacy_agree" name="privacy_agree" required>
+
+                    개인정보 수집 및 이용에 동의합니다.
+
+                </label>
+
+                <a href="{{ url_for('main.privacy') }}" target="_blank">
+                    개인정보 처리방침 보기
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- 버튼 -->
+        <div class="inquiry-buttons">
+
+            <button type="button" class="btn-cancel" onclick="history.back()">
+                취소
+            </button>
+
+            <button type="submit" class="btn-submit">
+                문의 등록
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}
