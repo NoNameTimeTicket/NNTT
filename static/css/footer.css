@@ -1,14 +1,9 @@
-/* 기본 여백 제거 */
- * {
+/* 기본 설정 */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-html{
-    height: 100%;
-}
-
 
 ul {
     list-style: none;
@@ -19,116 +14,184 @@ a {
     text-decoration: none;
 }
 
+
 /* Footer 전체 영역 */
 .footer {
     width: 100%;
-    height: 250px;
-    background-color: #D9D8D8;    
+    height: 220px;
     margin-top: auto;
-        
+    background-color: #d9d8d8;
+    color: #222;
 }
 
 
-/* Footer 내부 영역 */
+/* Footer 상단 영역 */
 .footer-inner {
     width: 1340px;
-    height: 250px;
+    height: 160px;
     margin: 0 auto;
 
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-
-    padding-top: 30px;
-    
 }
 
 
-/* 왼쪽 영역 */
+/* 왼쪽: 로고 + 고객센터 */
 .footer-left {
-    width: 400px;
-    padding-left: 150px;
-
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
-/* 임시 로고 */
+
+/* 로고 */
 .footer-logo {
-    width: 200px;
-    height: 100px;
+    width: 160px;
+    flex-shrink: 0;
 }
 
 .footer-logo img {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: block;
-    object-fit: contain;
-     
 }
 
 
-/* 고객센터 영역 */
+/* 고객센터 */
 .footer-contact {
-    margin-top: 5px;
-    font-weight: 600;
+    flex-shrink: 0;
+    margin-top:10px;
+}
+
+.footer-contact p {
+    margin: 0;
 }
 
 .footer-label {
+    margin-bottom: 6px !important;
     font-size: 14px;
-    margin-bottom: 3px;
+    font-weight: 700;
+    color: #222;
 }
 
 .footer-phone {
-    font-size: 22px;
+    margin-bottom: 8px !important;
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 5px;
-    
+    line-height: 1;
+    color: #222;
 }
 
 .footer-time {
     font-size: 11px;
-    font-weight: 500;
+    line-height: 1.5;
+    color: #444;
 }
 
 
 /* 오른쪽 메뉴 전체 */
-.footer-menu {
-    display: flex;
-    gap: 20px;
-
-    padding-top: 12px;
-    padding-right: 130px;
-    
-    
+.footer-menu{
+    display:flex;
+    align-items:flex-start;
+    gap:55px;
 }
 
-/* SUPPORT, POLICY 각각의 영역 */
-.footer-menu-group {
-    min-width: 140px;
-    
+
+/* SUPPORT / POLICY 그룹 */
+.footer-menu-group{
+    width:150px;
+    min-height:120px;
+}
+
+.footer-menu-group ul {
+    margin: 0;
+    padding: 0;
 }
 
 .footer-menu-group h3 {
+    margin: 0 0 20px;
     font-size: 16px;
-    margin-bottom: 20px;
-    
+    font-weight: 600;
+    color: #222;
 }
 
 .footer-menu-group li {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    font-size: 13px;
     font-weight: 500;
+}
+
+.footer-menu-group li:last-child {
+    margin-bottom: 0;
 }
 
 .footer-menu-group a {
     font-size: 13px;
+    color: #222;
 }
 
 .footer-menu-group a:hover {
     text-decoration: underline;
 }
+
+
+/* SUPPORT와 POLICY 사이 구분선 */
 .divider-line {
-    width: 0.3px;              
-    height: 170px;             
-    background-color: #868686;    
-    margin: 0;          
-    margin-right: 55px;
+    width: 1px;
+    height: 100px;
+    background-color: #c8c8c8;
+}
+
+
+/* Footer 하단 회사 정보 */
+.footer-bottom {
+    width: 1340px;
+    height: 60px;
+    margin: 0 auto;
+    padding-top: 9px;
+    border-top: 1px solid #bdbdbd;
+}
+
+
+/* 사업자 정보 */
+.footer-company-info {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.footer-company-info strong {
+    font-weight: 700;
+    color: #333;
+}
+
+.footer-company-info a {
+    color: #666;
+    text-decoration: none;
+}
+
+.footer-company-info a:hover {
+    text-decoration: underline;
+}
+
+
+/* 저작권 */
+.footer-copy {
+    margin-top: 8px;
+    font-size: 10px;
+    line-height: 1.4;
+    color: #888;
+}
+
+
+/* 화면 폭이 1340px보다 작을 때 */
+@media (max-width: 1380px) {
+    .footer-inner,
+    .footer-bottom {
+        width: calc(100% - 40px);
+    }
 }
