@@ -50,7 +50,7 @@ def get_kopis_performances(prfstate='02', rows='50', keyword=None, kid=None, shc
 
              # 검색어가 들어온 경우: 공연명(prfnm)에도 없고 지역명(area)에도 없으면 제외
             if keyword and (keyword.strip() not in prfnm and keyword.strip() not in area):
-                continue
+               continue
 
             performances.append({
                 'mt20id': db.findtext('mt20id'), # KOPIS 고유 공연 ID
