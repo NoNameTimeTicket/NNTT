@@ -129,16 +129,89 @@ def pay_process():
         db.session.commit()
 
         # 성공 알림창 띄우고 마이페이지로 이동 후 팝업 닫기
-        return """
-        <script>
-            alert('🎉 공연 예매 및 가상결제가 성공적으로 완료되었습니다!\\n\\n마이페이지 예매 내역에서 티켓 확인증을 확인해보세요.');
+        return """<script>
+            alert('공연 예매 및 가상결제가 성공적으로 완료되었습니다!');
             if (window.opener && !window.opener.closed) {
-                window.opener.location.href = '/mypage/orders';
+                window.opener.location.href = '/booking/orders';
             }
             window.close();
-        </script>
-        """
+        </script>"""
+    
     except Exception as error:
         db.session.rollback()
         print(f"결제 DB 저장 오류: {error}")
         return "<script>alert('예매 처리 중 오류가 발생했습니다.'); history.back();</script>"
+
+
+# =========================================================
+# 내 예매 내역 목록 보기 (월별 검색 드롭다운 포함)
+# =========================================================
+@booking_bp.route('/orders')
+def my_orders():
+    # 1. 로그인 안 한 사용자는 로그인 페이지로 이동
+    if not hasattr(g, 'user') or not g.user:
+        return "<script>alert('로그인이 필요합니다.'); location.href='/login';</script>"
+
+    # 2. 드롭다운에서 선택한 월 (예: '2026-08') 가져오기
+    selected_month = request.args.get('month', '')
+
+    try:
+        # 3. 현재 사용자의 전체 예매 내역을 최신순으로 가져오기
+        user_reservation = Reservation.query.filter_by(username=g.user.username)\
+                                            .order_by(Reservation.id.desc()).all()
+
+        # 4. 드롭다운 선택상자용 (년-월) 목록 중복 없이 만들기
+        available_months = sorted(list({
+            item.reservation_date.strftime('%Y-%m')
+            for item in user_reservation if item.reservation_date
+        }), reverse=True)
+
+        # 5. 월을 선택했다면 해당 월의 내역만 필터링
+        if selected_month:
+            year_num, month_num = map(int, selected_month.split('-'))
+            user_reservation = [
+                item for item in user_reservation
+                if item.reservation_date and
+                   item.reservation_date.year == year_num and
+                   item.reservation_date.month == month_num
+            ]
+    except Exception as error:
+        print(f"예매 내역 조회 오류: {error}")
+        user_reservation = []
+        available_months = []
+
+    # 6. 간단해진 예매 목록(user_reservations)을 HTML로 전달
+    return render_template(
+        'orders.html',
+        orders=user_reservation,
+        available_months=available_months,
+        selected_month=selected_month
+    )
+
+# =========================================================
+# 예매 취소 기능 (DB 삭제 대신 취소 상태만 변경)
+# =========================================================
+@booking_bp.route('/cancel/<int:order_id>', methods=['POST'])
+def cancel_order(order_id):
+    if not hasattr(g, 'user') or not g.user:
+        return "<script>alert('로그인이 필요합니다.'); location.href='/login';</script>"
+
+    # 취소할 예매 내역 찾기
+    target_order = Reservation.query.filter_by(id=order_id, username=g.user.username).first()
+
+    if not target_order:
+        return "<script>alert('해당 예매 내역을 찾을 수 없습니다.'); history.back();</script>"
+
+    if target_order.is_canceled:
+        return "<script>alert('이미 취소된 예매 건입니다.'); history.back();</script>"
+
+    try:
+        # DB에서 아예 지우지(delete) 않고, 취소 여부만 참(True)으로 바꿈
+        target_order.is_canceled = True
+        db.session.commit()
+        return "<script>alert('예매가 취소되었습니다.'); location.href='/booking/orders';</script>"
+
+    except Exception as error:
+        db.session.rollback()
+        print(f"예매 취소 오류: {error}")
+        return "<script>alert('예매 취소 중 오류가 발생했습니다.'); history.back();</script>"

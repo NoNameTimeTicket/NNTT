@@ -1,0 +1,236 @@
+/* 전체 화면 중앙 정렬 및 상단 헤더 (.orders-box, .orders-top)
+/* 예매 내역 전체를 감싸는 제일 큰 상자 */
+.orders-box {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+}
+/* 상단 제목(📋 내 예매 내역)과 드롭다운 상자를 나란히 만드는 구역 */
+.order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #222;
+}
+
+/* 월별 선택 드롭다운 상자 */
+.month-select {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* 개별 예매 카드 박스 (.order-list, .order-card)
+/* 카드들을 세로로 차곡차곡 쌓아주는 세로 줄짓기 틀 */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 예매 1건을 나타내는 흰색 카드 박스 */
+.order-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+/* 💡 취소된 예매 카드는 구분을 위해 살짝 어둡고 흐리게 변경! */
+.order-card.canceled {
+  background: #f8fafc;
+  opacity: 0.75;
+}
+
+/*카드 내부 레이아웃 (.card-header, .card-body, .card-footer)
+/* 카드 맨 위 (예매번호 #1 + 상태 배지) */
+.cord-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 1px solid #f1f5f9;
+}
+
+.order-id {
+  font-weight: bold;
+  color: #475569;
+}
+
+/* 카드 중간 (공연 정보, 관람 일시) */
+.cord-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  width: 90px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.val {
+  color: #1e293b;
+  font-size: 15px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+/* 카드 맨 아래 (버튼들이 모여있는 곳) */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* 버튼 및 예매 상태 배지 (.btn-*, .badge-*)
+/* 네이버지도 초록색 미니 버튼 */
+.btn-map {
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* 마우스를 올렸을 때(hover) 색상이 반전되어 확 눈에 띔! */
+.btn-map:hover {
+  background: #16a34a;
+  color: #fff;
+}
+
+/* 🎫 티켓 확인증 검은색 버튼 */
+.btn-ticket {
+  padding: 6px 12px;
+  background: #334155;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ❌ 예매 취소 빨간색 버튼 */
+.btn-cancel {
+  padding: 6px 12px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.inline-form {
+  display: inline; /* 취소 버튼 form 태그가 줄바꿈되지 않고 옆에 붙게 함 */
+}
+
+/* 🏷️ 예매 상태 동그라미 배지 공통 */
+.badge {
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.badge-active { background: #dcfce7; color: #15803d; } /* 초록색 예매완료 알약 */
+.badge-canceled { background: #fee2e2; color: #b91c1c; } /* 빨간색 취소완료 알약 */
+
+.canceled-text { color: #94a3b8; font-size: 13px; }
+.empty-box { text-align: center; padding: 40px; background: #fff; border-radius: 8px; color: #64748b;}
+
+/* 티켓 확인증 모달 팝업창 (.modal-*)
+/* 모달이 켜질 때 화면 전체를 어둡게 덮는 반투명 검은 막 */
+.modal-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 다른 어떤 요소보다 가장 위로 올라오게 세팅! */
+}
+
+/* 모달 팝업 상자 본체 */
+.modal-card {
+  background: #fff;
+  width: 380px;
+  border-radius: hidden;
+}
+
+/* 팝업 상단 검은 헤더 바 */
+.modal-header {
+  padding: 12px 16px;
+  background: #1e293b;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-close-x {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 16px;
+}
+
+/* 모달 안쪽 티켓 영수증 디자인 박스 */
+.receipt-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1 ; /* 영수증 느낌 나도록 '점선(dashed)' 테두리를 줌 */
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.receipt-box p {
+  margin: 6px 0;
+}
+
+/* 팝업 맨 아래 버튼 구역 */
+.modal-footer {
+  padding: 10px 16px;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-naver {
+  padding: 6px 12px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-close {
+  padding: 6px 12px;
+  background: #64748b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
