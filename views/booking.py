@@ -103,7 +103,21 @@ def pay_process():
     address = request.form.get('address', '공연장 주소')
     booking_date = request.form.get('booking_date')  # 달력에서 선택한 날짜
     booking_time = request.form.get('booking_time')  # 선택한 공연 시간
-    ticket_count = request.form.get('ticket_count', '1') # 인원수
+    ticket_count = int(request.form.get('ticket_count', '1')) # 인원수    
+    unit_price = int(request.form.get('unitPrice', 0)) # 티켓 한장 가격    
+    total_price = unit_price * ticket_count
+
+    # 계산 버튼을 누르면 얻는 정보
+    print("-----예약 정보-----")
+    print(f'제목 = {title}')
+    print(f'공연장소 = {place_name}')
+    print(f'공연장소 주소 = {address}')
+    print(f'booking_date = {booking_date}')
+    print(f'booking_time = {booking_time}')
+    print(f'ticket_count = {ticket_count}')
+    print(f'unit_price = {unit_price}')
+    print(f'total_price = {total_price}')
+    print("---------------")
 
     if not booking_date or not booking_time:
         return "<script>alert('관람 날짜와 회차 시간을 선택해 주세요.'); history.back();</script>"
@@ -114,16 +128,18 @@ def pay_process():
     except ValueError:
         target_datetime = datetime.now()
 
-    full_place_info = f"{place_name} [{title} / {ticket_count}매]"
-
     # DB에 예매 정보 저장하기
     try:
         new_reservation = Reservation(
             username=g.user.username,
             address=address,
-            place=full_place_info,
-            reservation_date=target_datetime,
-            is_canceled=False
+            place=place_name,
+            title = title,
+            reservation_date=datetime.now(),
+            real_play_date = target_datetime,
+            is_canceled=False,
+            amount_ticket= ticket_count,
+            total_price= total_price
         )
         db.session.add(new_reservation)
         db.session.commit()
