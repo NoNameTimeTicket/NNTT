@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from forms import UserCreateForm, UserLoginForm
 from table_model import User
 import functools
+from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -30,7 +31,7 @@ def register(): # 회원등록 담당
             return redirect(url_for('main.index'))
         else:
             flash('이미 존재하는 사용자입니다.')
-    return render_template('register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 @bp.route('/login/', methods=('GET', 'POST'))
 def login():
@@ -47,7 +48,7 @@ def login():
             session['user_id'] = user.id
             return redirect(url_for('main.index'))
         flash(error)
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 # 로그아웃 라우트 함수
 @bp.route('/logout/')
@@ -73,3 +74,27 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = User.query.get(user_id)
+
+# 회원정보 변경 함수
+@bp.route('/update_profile', methods=['GET', 'POST'])
+@login_required
+def update_profile():
+    if request.method == 'POST':
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
+
+        # 변경 데이터 할당
+        g.user.email = email
+        g.user.phone = phone
+        g.user.address = address
+
+        try:
+            db.session.commit()
+            flash("회원정보가 성공적으로 수정되었습니다.")
+            return redirect(url_for('main.index'))  # 수정 완료 후 이동할 페이지
+        except IntegrityError:
+            db.session.rollback()
+            flash("이미 사용 중인 이메일이나 전화번호입니다.")
+
+    return render_template('auth/update_profile.html')

@@ -296,16 +296,16 @@ def performance_detail(perf_id):
         abort(500, description="공연 상세 정보를 불러오는 도중 오류가 발생했습니다.")
 
 
-# 3. 회원가입
-@main_bp.route('/register', methods=['GET'])
-def register():
-    form = UserCreateForm() # form 객체를 넘겨주어야 register.html이 정상 렌더링됨
-    return render_template('register.html', form=form)
+# # 3. 회원가입
+# @main_bp.route('/register', methods=['GET'])
+# def register():
+#     form = UserCreateForm() # form 객체를 넘겨주어야 register.html이 정상 렌더링됨
+#     return render_template('auth/register.html', form=form)
 
-# 4. 로그인
-@main_bp.route('/login')
-def login():
-    return render_template('login.html')
+# # 4. 로그인
+# @main_bp.route('/login')
+# def login():
+#     return render_template('login.html')
 
 # 5. 예매 내역 (통합 내역 목록 + 티켓 확인증 모달 팝업)
 @main_bp.route('/mypage/orders')
