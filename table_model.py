@@ -1,23 +1,28 @@
 from init_db import db
 from sqlalchemy.orm import validates
 import re
-from filter.filter_date import format_datetime
+from sqlalchemy.dialects.mysql import INTEGER
+from datetime import datetime
 
-address_length = 200
-username_length = 150
-max_string = 200
+ADDRESS_LENGTH = 200
+USERNAME_LENGTH = 150
+MAX_STRING = 200
 
 # 회원 정보
 # username
 #   unique = True 설정하여 중복을 막음
 #   운영자용 계정은 가입못하게 설정
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(username_length), unique=True, nullable=False)
-    password = db.Column(db.String(max_string), nullable=False) # hashcode로 암호화하는 과정 때문에 여유 buffer 추가
+    __tablename__ = 'user'
+    id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    username = db.Column(db.String(USERNAME_LENGTH), unique=True, nullable=False)
+    password = db.Column(db.String(MAX_STRING), nullable=False) # hashcode로 암호화하는 과정 때문에 여유 buffer 추가
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(20), unique=True, nullable=False)
-    address = db.Column(db.String(address_length), nullable=True)
+    address = db.Column(db.String(ADDRESS_LENGTH), nullable=True)
+
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now)
+    updated_at = db.Column(db.DateTime(), nullable=False, default=datetime.now, onupdate=datetime.now)
 
     #금지된 username 검증
     @validates('username')
@@ -34,46 +39,81 @@ class User(db.Model):
     @validates('phone')
     def validate_phone(self, key, phone_number):
         if not phone_number:
-            return phone_number  # nullable=True 인 경우 빈 값 허용
+            raise ValueError('전화번호는 필수 입력 항목입니다.')
 
-        # 010-1234-5678 또는 02-123-4567 형태 검사 (하이픈 포함)
-        # ^0\d{1,2}-\d{3,4}-\d{4}$ -> 0으로 시작, 국번 2~3자리, 중간 3~4자리, 끝 4자리
-        pattern = r'^0\d{1,2}-\d{3,4}-\d{4}$'
-        
-        if not re.match(pattern, phone_number):
-            raise ValueError("올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)")
-            
-        return phone_number
+        # 숫자만 추출 ('-' 및 공백 제거)
+        digits = re.sub(r'\D', '', str(phone_number))
+
+        # 휴대폰 번호 패턴 검사 (010, 011, 016, 017, 018, 019로 시작하는 10자리 또는 11자리)
+        # - 11자리 (01012345678): 010-1234-5678
+        # - 10자리 (0111234567): 011-123-4567
+        if len(digits) == 11 and digits.startswith(
+            ('010', '011', '016', '017', '018', '019')
+        ):
+            formatted_phone = f'{digits[:3]}-{digits[3:7]}-{digits[7:]}'
+        elif len(digits) == 10 and digits.startswith(
+            ('010', '011', '016', '017', '018', '019')
+        ):
+            formatted_phone = f'{digits[:3]}-{digits[3:6]}-{digits[6:]}'
+        else:
+            raise ValueError(
+                '올바른 휴대폰 번호 형식이 아닙니다. (예: 01012345678 또는 010-1234-5678)'
+            )
+
+        return formatted_phone
 
 # 예약 정보
 # 예약이 완료되고 나서 예약정보를 넣는다
 class Reservation(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'reservation'
+
+    # 예약 ID: unsigned 32bit (0 - 4,294,967,295) 약 42억개. AUTO_INCREMENT= id 자동증가
+    id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
     # 예약자
-    username = db.Column(db.String(username_length), nullable=False)
-    # 예약 주소
-    address = db.Column(db.String(address_length), nullable=False)
-    # 예약 장소이름
+    username = db.Column(db.String(USERNAME_LENGTH), nullable=False)
+    # 예약 장소 주소
+    address = db.Column(db.String(ADDRESS_LENGTH), nullable=False)
+    # 예약 장소 이름
     place = db.Column(db.String(50), nullable=False)
     # 예약 시간
     reservation_date = db.Column(db.DateTime(), nullable=False)
+    # 실제 공연 시간
+    real_play_date = db.Column(db.DateTime(), nullable=False)
     # 취소 여부(기본 값= False)
     is_canceled = db.Column(db.Boolean, default=False, nullable=False)
+    # 티켓 개수: unsigned 8bit (0 - 255) 음수 확률 0% unsigned 설정
+    amount_ticket = db.Column(db.SmallInteger, nullable=False, default=1)
+    # 총 결재 가격: unsigned 32bit (0 - 4,294,967,295) 음수 확률 0% unsigned 설정
+    total_price = db.Column(INTEGER(unsigned=True), nullable=False, default=0)
+
+    @validates('amount_ticket')
+    def validate_amount_ticket(self, key, amount):
+        if amount is None or int(amount) < 1:
+            raise ValueError('티켓은 최소 1장 이상 예매해야 합니다.')
+        if int(amount) > 100:
+            raise ValueError('한 번에 예매할 수 있는 최대 티켓 수를 초과했습니다.')
+        return amount
 
 # 공지사항 글 
 class Notice(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String(max_string), nullable=False)
+    __tablename__ = 'notice'
+
+    id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    subject = db.Column(db.String(MAX_STRING), nullable=False)
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    updated_date = db.Column(db.DateTime(), nullable=False, default=datetime.now, onupdate=datetime.now)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False, index=True)
     user = db.relationship('User', backref=db.backref('notice_set'))
 
 # 자주 묻는 질문 글
 class FAQ(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String(max_string), nullable=False)
+    __tablename__ = 'faq'
+
+    id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    subject = db.Column(db.String(MAX_STRING), nullable=False)
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    updated_date = db.Column(db.DateTime(), nullable=False, default=datetime.now, onupdate=datetime.now)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False, index=True)
     user = db.relationship('User', backref=db.backref('faq_set'))
