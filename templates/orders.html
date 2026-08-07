@@ -3,29 +3,110 @@
 {% block title %}내 예매 내역 - NNTT{% endblock %}
 
 {% block content %}
-    <h2>내 예매 내역 목록</h2>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white;">
-        <thead>
-            <tr style="background-color: #f4f4f4; text-align: left;">
-                <th style="padding: 12px; border-bottom: 2px solid #ddd;">예매 번호</th>
-                <th style="padding: 12px; border-bottom: 2px solid #ddd;">공연명</th>
-                <th style="padding: 12px; border-bottom: 2px solid #ddd;">관람일시</th>
-                <th style="padding: 12px; border-bottom: 2px solid #ddd;">확인증</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">#2026080101</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">뮤지컬 〈NNTT〉</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">2026-08-15 19:00</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">
-                    <!-- 티켓 확인증 모달 버튼 -->
-                    <button onclick="alert('티켓 확인증 모달 팝업 열기')" style="padding: 4px 8px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        티켓 확인증
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="orders-box">
+    <!-- 상단 제목과 월별 드롭다운 필터 -->
+    <div class="orders-top">
+        <h2>📋 내 예매 내역</h2>
+        <div class="filter-box">
+            <label for="monthFilter">월별보기:</label>
+            <select id="monthFilter" class="month-select" onchange="filterByMonth(this.value)">
+                <option value="" {% if not selected_month %}selected{% endif %}>전체 보기</option>
+                {% for month in available_months %}
+                    <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>
+                        {{ month[:4] }}년 {{ month[5:] }}월
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- 카드 형태 예매 목록 -->
+    <div class="order-list">
+        {% if orders %}
+            {% for order in orders %}
+                <div class="card-card {% if order.is_canceled %}canceled{% endif %}">
+                    <!-- 카드 헤더: 예매번호 및 상태 -->
+                    <div class="card-header">
+                        <span class="order-id">예매번호 #{{ order.id }}</span>
+                        {% if order.is_canceled %}
+                            <span class="badge badge-canceled">취소완료</span>
+                        {% else %}
+                            <span class="badge badge-active">예매완료</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- 카드 본문: 공연정보 및 일시 -->
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="label">공연정보</span>
+                            <span class="val bold">{{ order.place }}</span>
+                            <button type="button" class="btn-map" onclick="openNaverMap('{{ order.address }}')">
+                                📍 네이버지도
+                            </button>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">관람일시</span>
+                            <span class="val">
+                                {% if order.reservation_date %}
+                                    {{ order.reservation_date.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 카드 하단 버튼 구역 -->
+                    <div class="card-footer">
+                        {% if not order.is_canceled %}
+                            <!-- data-* 속성에 티켓 데이터를 보관합니다 -->
+                            <button type="button" class="btn-ticket"
+                                    data-id="{{ order.id }}"
+                                    data-place="{{ order.place }}"
+                                    data-date="{{ order.reservation_date.strftime('%Y-%m-%d %H:%M') if order.reservation_date else '' }}"
+                                    data-address="{{ order.address }}"
+                                    onclick="openTicketModal(this)">
+                                🎫 확인증
+                            </button>
+
+                            <form action="{{ url_for('booking.cancel_order', order_id=order.id) }}" method="POST" class="inline-form" onsubmit="return confirmCancel();">
+                                <button type="submit" class="btn-cancel">예매 취소</button>                    
+                            </form>
+                        {% else %}
+                            <span class="canceled-text">취소된 예매 건입니다.</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-box">예매하신 공연 내역이 없습니다.</div>
+        {% endif %}       
+    </div>
+</div>
+
+<!-- 🎟️ 티켓 확인증 모달 팝업창 (ticktetModal -> ticketModal 수정) -->
+<div id="ticketModal" class="modal-bg" style="display: none;">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>🎫 티켓 확인증</h3>
+            <button type="button" class="btn-close-x" onclick="closeTicketModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="receipt-box">
+                <p><strong>예매번호:</strong> <span id="modalID"></span></p>
+                <p><strong>공연정보:</strong> <span id="modalPlace"></span></p>
+                <p><strong>관람일시:</strong> <span id="modalDate"></span></p>
+                <p><strong>공연장주소:</strong> <span id="modalAddress"></span></p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="modalMapBtn" class="btn-naver">📍 네이버지도 위치 보기</button>
+            <button type="button" class="btn-close" onclick="closeTicketModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/orders.js') }}"></script>
 {% endblock %}

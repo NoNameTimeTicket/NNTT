@@ -308,9 +308,9 @@ def login():
     return render_template('login.html')
 
 # 5. 예매 내역 (통합 내역 목록 + 티켓 확인증 모달 팝업)
-@main_bp.route('/mypage/orders')
-def my_orders():
-    return render_template('orders.html')
+#@main_bp.route('/mypage/orders')
+#def my_orders():
+#    return render_template('orders.html')
 
 # 6. term n condition 과 policy
 @main_bp.route('/terms')
