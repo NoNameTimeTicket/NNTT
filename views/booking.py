@@ -1,6 +1,6 @@
-# 팝업 예매 & 가상 결제 백엔드 박근수 2026-08-06
+# 팝업 예매 & 가상 결제 백엔드 박근수 2026-08-06, 2026-08-07 현장판매, 사전판매관련 내용 수정
 
-# C:\projects\NNTT\booking.py
+# C:\projects\NNTT\views\booking.py
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from datetime import datetime
 
@@ -8,9 +8,42 @@ from datetime import datetime
 from init_db import db
 from table_model import Reservation
 from utils import extract_price_number, parse_kopis_times
+import re # 글자 속에서 원하는 패턴(숫자)을 찾아내는 내는 함수
 
 # 플라스크 블루프린트 설정 (/booking URL 관리)
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
+
+# =========================================================
+#  새로 추가하는 코드
+# 파일 아무 곳에서나 쓸 수 있게 popup() 함수 바로 위에 이 함수를 새로 추가
+# 티켓가격 관련 함수
+# =========================================================
+def parse_ticket_prices(raw_price_str):
+    if not raw_price_str:
+        return[{'label': '일반', 'price': 0, 'text': '일반 (0원)'}]
+
+    # "글자(좌석/종류) + 숫자 + 원" 패턴을 한꺼번에 모조리 찾음 (예: S석 20,000원)
+    matches =re.findall(r'([가-힣a-zA-Z0-9\s]*?)\s*([\d,]+)\s*원', raw_price_str)
+
+    options = []
+    for label, price_str in matches:
+        clean_label = label.strip() or '일반'
+        price = int(price_str.replace(',', '')) # 쉼표(,) 빼고 숫자로 변경
+        options.append({
+            'label' : clean_label,
+            'price' : price,
+            'text' : f"{clean_label} ({price:,}원)" # 드롭다운 상자에 들어갈 글자
+        })
+
+    # 패턴 추출에 실패한 경우(숫자만 있는 경우 등) 예외 처리
+    if not options:
+        nums = re.findall(r'[\d,]+', raw_price_str)
+        if nums:
+            price = int(nums[0].replace(',', ''))
+            options.append({'label': '일반', 'price': price, 'text': f"일반 ({price:,}원)"})
+        else:
+            options.append({'label': '무료 / 변동', 'price': 0, 'text': '무료 / 변동'})
+    return options
 
 
 # =========================================================
@@ -30,10 +63,13 @@ def popup():
     ticket_price_raw = request.args.get('ticket_price', '')
     dtguidance = request.args.get('time_notice', '')
 
-    # 2) 티켓 가격(숫자)과 공연 회차 시간(목록)을 정리합니다.
-    unit_price = extract_price_number(ticket_price_raw)
-    available_times = parse_kopis_times(dtguidance)
-    today_date = datetime.now().strftime('%Y-%m-%d')
+    # 티켓가격 옵션관련
+    ticket_options = parse_ticket_prices(ticket_price_raw)
+    default_price = ticket_options[0]['price'] # 첫 번째 티켓 단가를 기본값으로 설정
+
+    # 빠져있던 시간 파싱 및 오늘 날짜 만드는 코드
+    available_times = parse_kopis_times(dtguidance) # 공연 회차 시간 목록
+    today_date = datetime.now().strftime('%Y-%m-%d') # 오늘 날짜 (YYYY-MM-DD)
 
     # 3) HTML({{ data.xxx }})로 보낼 상자(data)를 포장합니다!
     popup_data = {
@@ -41,8 +77,9 @@ def popup():
         'title': title,
         'place_name': place_name,
         'address': address,
-        'unit_price': unit_price,
-        'unit_price_text': f"{unit_price:,}원", # 원화 표시 (예: 50,000원)
+        'unit_price': default_price,
+        'unit_price_text': f"{default_price:,}원", # 원화 표시 (예: 50,000원)
+        'ticket_options' : ticket_options,        #티켓 가격 선택
         'available_times': available_times,     # 공연 시간 목록
         'today': today_date,                   # 오늘 날짜
         'user_phone': getattr(g.user, 'phone', '010-0000-0000') or '010-0000-0000'

@@ -48,17 +48,29 @@
                     <strong>공연 장소:</strong> <span class="info-value">{{ data.place_name }}</span>
                 </div>
 
-                <!-- 💵 티켓 한 장 가격 (price-highlight 클래스로 빨간색 강조) -->
+                <!-- 💵 티켓 한 장 가격 (사전예약가가 있으면 동그라미 선택 버튼 표시, 없으면 그냥 글자 표시) -->
                 <div class="info-item">
-                    <strong>티켓 단가:</strong> <span class="info-value price-highlight">{{ data.unit_price_text }}</span>
+                    <strong>티켓 단가:</strong>
+                    <div class="price-radio-group">
+                        {% for option in data.ticket_options %}
+                          <label class="price-radio-label">
+                            <!-- 첫 번째 항목(loop.first)에 자동으로 checked 설정 -->
+                             <input type="radio" name="price_type" value="{{ option.price }}" {% if loop.first %}checked{% endif %}>
+                             {{ option.label }} ({{ "{:,}".format(option.price) }}원)
+                          </label>
+                        {% endfor %}
+                    </div>
                 </div>
 
-                <!-- ⏰ 회차(공연 시간) 선택 드롭다운 상자 -->
-                <div>
-                    <label class="form-label">⏰ 회차 선택 (공연 시간)</label>
+                <!-- 누락되었던 회차(공연 시간) 선택 구역 -->
+                <div class="info-item">
+                    <label class="form-label" style="margin-bottom: 4px;">⏰ 회차 선택 (공연 시간)</label>
                     <select name="booking_time" required class="form-control">
                         {% for time_str in data.available_times %}
                             <option value="{{ time_str }}">{{ time_str }} 공연</option>
+                        {% else %}
+                            <!-- 공연 시간 정보가 비어있을 때를 대비한 기본값 -->
+                            <option value="19:30">19:30 공연</option>
                         {% endfor %}
                     </select>
                 </div>

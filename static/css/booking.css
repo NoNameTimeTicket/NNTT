@@ -278,3 +278,33 @@ body {
 .btn-pay:hover {
     background: #ff2e43;
 }
+
+/* =========================================================
+   🔘 사전예약 / 현장판매 라디오 버튼 전용 깔끔한 스타일
+   ========================================================= */
+ /* 라디오 버튼들을 세로로 깔끔하게 정렬 */
+ .price-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+ }
+
+ /* 글씨와 동그라미 버튼의 높이를 딱 맞춰주는 설정 */
+ .price-radio-label {
+    font-size: 14px;
+    font-width: bold;
+    color: #1e272e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+ }
+
+ /* 라디오 동그라미 버튼을 포인트 빨간색으로 이쁘게 체인지 */
+ .price-radio-label input[type="radio"] {
+    accent-color: #ff4757; /* 선택했을 때 켜지는 강조 색상 */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+ }

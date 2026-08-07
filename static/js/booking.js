@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 티켓 한 장 가격 가져오기 (없으면 50,000원)
     const unitPrice = unitPriceInput ? (parseInt(unitPriceInput.value) || 50000) : 50000;
 
-    // 숫자를 더하고 빼주는 계산 공식
+    // 숫자를 더하고 빼주는 계산 공식 (사전판매, 현장판매 관련 수정 2026-08-07)
     function updateCount(diff) {
         count += diff;
         if (count < 1) count = 1;   // 최소 1명 이상만 선택 가능
@@ -135,12 +135,37 @@ document.addEventListener('DOMContentLoaded', function () {
         if (countNumSpan) countNumSpan.textContent = count;
         if (ticketCountInput) ticketCountInput.value = count;
 
+        // 클릭되어 현재 변경된 티켓 단가(unitPriceInput)를 실시간으로 읽음(추가)
+        // const currentUnitPrice = unitPriceInput ? (parseInt(unitPriceInput.value) || 50000) : 50000;
+
+        // 현재 체크(checked)된 라디오 버튼의 값을 읽어옴
+        const checkedRadio = document.querySelector('input[name="price_type"]:checked');
+
+        let currentUnitPrice = 0;
+        if (checkedRadio) {
+            currentUnitPrice = parseInt(String(checkedRadio.value).replace(/[^0-9]/g, '')) || 0;
+        } else if (unitPriceInput) {
+            currentUnitPrice = parseInt(String(unitPriceInput.value).replace(/[^0-9]/g, '')) || 0;
+        }
+
+        if (unitPriceInput) {
+            unitPriceInput.value = currentUnitPrice;
+        }
+
+        
         // 최종 금액 계산 (단가 × 인원수)
-        const total = unitPrice * count;
+        const total = currentUnitPrice * count;
         if (totalPriceText) {
             totalPriceText.textContent = total.toLocaleString() + '원';
         }
     }
+
+   // 라디오 버튼 선택(change) 이벤트 감지
+       document.addEventListener('change', function(e) {
+        if (e.target && (e.target.name === 'price_type' || e.target.classList.contains('price-radio-input'))) {
+            updateCount(0);     //라디오 버튼 선택이 바뀌면 즉시 금액 다시 계산!
+        }
+       });
 
     // 마이너스(-) 버튼 클릭 시 1명 빼기
     if (btnMinus) {
@@ -157,4 +182,5 @@ document.addEventListener('DOMContentLoaded', function () {
             updateCount(1);
         });
     }
+    updateCount(0);
 });
