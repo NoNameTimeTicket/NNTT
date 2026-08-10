@@ -49,8 +49,8 @@
                         <div class="info-row">
                             <span class="label">관람일시</span>
                             <span class="val">
-                                {% if order.reservation_date %}
-                                    {{ order.reservation_date.strftime('%Y-%m-%d %H:%M') }}
+                                {% if order.real_play_date %}
+                                    {{ order.real_play_date.strftime('%Y-%m-%d %H:%M') }}
                                 {% else %}
                                     -
                                 {% endif %}
