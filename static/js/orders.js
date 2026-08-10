@@ -24,19 +24,23 @@ function openNaverMap(address) {
 function openTicketModal(btnElement) {
   // [수정] data-date 속성값 읽어오기
   const orderId = btnElement.getAttribute('data-id');
+  const title = btnElement.getAttribute('data-title');
   const place = btnElement.getAttribute('data-place');
   const date = btnElement.getAttribute('data-date');
+  const created = btnElement.getAttribute('data-created');
   const address = btnElement.getAttribute('data-address');
 
   // [수정] HTML 대소문자(modalID) 맞춤 및 날짜/주소 데이터 각각 제대로 입력
   document.getElementById('modalID').textContent = '#' + orderId;
-  document.getElementById('modalPlace').textContent = place;
+  document.getElementById('modalTitle').textContent = title || '-';
+  document.getElementById('modalPlace').textContent = place || '-';
   document.getElementById('modalDate').textContent = date || '-';
+  document.getElementById('modalCreated').textContent = created || '예매 일시 정보 없음';
   document.getElementById('modalAddress').textContent = address || '주소 없음';
 
   // 네이버지도 버튼 이벤트 연결
   document.getElementById('modalMapBtn').onclick = function () {
-    openNaverMap(address);
+    openNaverMap(place);
   };
 
   document.getElementById('ticketModal').style.display = 'flex';
