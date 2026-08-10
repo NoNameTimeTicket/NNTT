@@ -22,6 +22,7 @@ a {
     margin-top: auto;
     background-color: #d9d8d8;
     color: #222;
+    border-top: 1px solid #6c8e9060 ;
 }
 
 
@@ -85,23 +86,26 @@ a {
 
 .footer-time {
     font-size: 11px;
-    line-height: 1.5;
+    line-height: 1.7;
     color: #444;
+    gap: 10px;
+
 }
 
 
 /* 오른쪽 메뉴 전체 */
-.footer-menu{
-    display:flex;
-    align-items:flex-start;
-    gap:55px;
+.footer-menu {
+    display: flex;
+    align-items: flex-start;
+    gap: 35px;
+
 }
 
 
 /* SUPPORT / POLICY 그룹 */
-.footer-menu-group{
-    width:150px;
-    min-height:120px;
+.footer-menu-group {
+    width: 150px;
+    min-height: 120px;
 }
 
 .footer-menu-group ul {
@@ -114,12 +118,14 @@ a {
     font-size: 16px;
     font-weight: 600;
     color: #222;
+
 }
 
 .footer-menu-group li {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     font-size: 13px;
     font-weight: 500;
+    margin-left: 37px;
 }
 
 .footer-menu-group li:last-child {
@@ -137,10 +143,11 @@ a {
 
 
 /* SUPPORT와 POLICY 사이 구분선 */
-.divider-line {
+.divider-line_bottom {
     width: 1px;
-    height: 100px;
-    background-color: #c8c8c8;
+    height: 110px;
+    margin-top: 10px;
+    background-color: #bdbdbd;
 }
 
 
@@ -188,10 +195,73 @@ a {
 }
 
 
-/* 화면 폭이 1340px보다 작을 때 */
-@media (max-width: 1380px) {
-    .footer-inner,
+@media (max-width: 1024px) {
+    .footer {
+        height: auto;
+        padding: 30px 0;
+        text-align: center;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: auto;
+        gap: 25px;
+        padding: 0 20px;
+    }
+
+    .footer-left {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        gap: 45px;
+        text-align: left;
+    }
+
+    .footer-contact {
+        margin-top: 0 auto;
+    }
+
+    .footer-menu {
+        justify-content: center;
+        align-items: center;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .footer-menu-group {
+        width: auto;
+        min-height: auto;
+        text-align: center;
+    }
+
+    .footer-menu-group li {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .divider-line_bottom {
+        height: 70px;
+        margin-top: 0;
+    }
+
+    
     .footer-bottom {
-        width: calc(100% - 40px);
+        width: 100%;
+        height: auto;
+        padding: 20px;
+        margin-top: 15px;
+    }
+
+    /* 모바일에서는 긴 한 줄 텍스트가 잘리지 않고 줄바꿈되도록 설정 */
+    .footer-company-info {
+        white-space: normal;
+        text-overflow: clip;
+        word-break: keep-all;
+        /* 단어 단위 줄바꿈 */
     }
 }

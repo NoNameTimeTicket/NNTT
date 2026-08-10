@@ -1,0 +1,246 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* 상단 GNB 전체 레이아웃 */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fabdaf;
+    color: #fff;
+    height: 100px;
+    width: 100%;
+    border-bottom: 1px solid #6c8e9042;    
+
+    min-width: 1200px;
+    padding: 0 20px;
+    position: relative;
+}
+.nav_wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    max-width: 1250px;
+    padding: 0 10px;    
+    position: relative;
+}
+.container {
+    max-width: 1200px;
+    min-width: 1200px;
+    margin: 25px auto;
+}
+
+
+/* 로고 + 검색창을 묶어주는 좌측 그룹 */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;    
+}
+
+.navbar .logo a {
+    display: flex;
+    align-items: center;
+}
+
+.logo_img {
+    height: 90px;
+    margin-top: 1px;
+    display: block;
+}
+
+/* GNB 통합 검색바 */
+.search-form {
+    display: flex;
+    height: 45px;
+}
+
+.search-form input {
+    padding: 6px 20px;
+    border-radius: 18px 0 0 18px;
+    border: 1px solid #6C8E9080;
+    border-right: none;
+    outline: none;
+    width: 300px;
+    /* 검색창 너비 지정 */
+}
+
+.search-form button {
+    padding: 6px 12px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: 1px solid #6c8e9080;
+    border-left: none;
+    border-radius: 0 18px 18px 0;
+    cursor: pointer;
+}
+
+.search_img {
+    height: 35px;
+    width: auto;
+    /* 원본 가로 비율 유지 */
+}
+
+/* 우측 상단 로그인 메뉴 영역 */
+.nav-right {
+    display: flex;
+    align-items: center; 
+    
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+
+}
+
+.nav-links a {
+    display: flex;
+    color: #2f6163;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: #7492f6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+}
+
+/* 목록 정리 */
+.nav-all {
+    display: flex;
+    gap: 15px;
+    border-bottom: 0.7px solid #6c8e9042;    
+    padding-bottom: 20px;
+    font-weight: bold;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+
+    height: 40px;
+    width: 85px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #e6e6e6;
+    border: 1px solid #6c8e9042;
+
+    text-decoration: none;
+    color: #333;
+}
+
+.nav-menu:hover {
+    background-color: #a2a1a1a1;
+}
+
+.nav-menu.active {
+    background-color: #717171;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.divider-line_top {
+    width: 0.3px;
+    height: 15px;
+    background-color: #3d3a3a71;
+    margin-top: 6px;
+}
+
+@media (max-width: 1024px) {
+
+    /* PC용 고정 너비 해제 및 높이 유연화 */
+    .navbar {
+        min-width: 320px;       /* 1200px 고정해제 320px로 변경 */
+        width: 100%;
+        height: auto;           /* 높이고정(100px)을 풀어 요소가 내려와도 감싸게 변경 */
+        flex-direction: column; /* 가로 정렬 -> 세로 정렬 변경 */
+        padding: 5px;
+        gap: 15px;              /* 세로 요소 간격 */
+    }
+
+    .container {
+        min-width: 320px;       
+        width: 100%;
+        padding: 0 15px;
+    }
+    .nav_wrap {
+        flex-direction: column; /* 가로 배치 -> 세로 배치 */
+        height: auto;           /* 고정 높이 해제 */
+        gap: 10px;              /* 로고 영역과 로그인 영역 사이 간격 */
+    }
+
+    /* 로고 & 검색창 그룹 세로/유연 배치 */
+    .nav-left {
+        flex-direction: column;
+        width: 100%;
+        gap: 7px;
+    }
+
+    /* 검색창 반응형 대응 */
+    .search-form {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding-top: 0;
+    }
+
+    .search-form input {
+        width: 100%;             
+        max-width: 300px;
+    }
+
+    /* 오른쪽 메뉴 중앙 정렬 */
+    .nav-right {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .nav-all {
+        overflow-x: auto;            /* 화면을 넘어가면 가로 스크롤 생성 */
+        white-space: nowrap;         /* 메뉴 버튼들의 줄바꿈 방지 */
+        padding-bottom: 10px;        /* 모바일용 하단 여백 조절 */
+        
+        /* 모바일 터치 스크롤 부드럽게 설정 */
+        -webkit-overflow-scrolling: touch; 
+        
+        /* 파이어폭스/IE 스크롤바 숨김 */
+        scrollbar-width: none;       
+        -ms-overflow-style: none;    
+    }
+
+    /* 크롬/사파리/웹킷 기반 브라우저 스크롤바 숨김 */
+    .nav-all::-webkit-scrollbar {
+        display: none;               
+    }
+
+    .nav-menu {
+        flex-shrink: 0;             /* 메뉴 버튼이 고정 너비를 유지 */
+    }
+
+}

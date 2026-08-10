@@ -1,96 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/images/fabicon_02.png">
 
     {% block style %}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     {% endblock %}
-    <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/footer.css') }}">
-      <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/inquiry.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inquiry.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <title>{% block title %}NNTT 공연 예매{% endblock %}</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
 
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        /* 상단 GNB 전체 레이아웃 */
-        .navbar {
-            display: flex;
-            justify-content: space-between; /* 좌측 그룹과 우측 메뉴를 양 끝 배치 */
-            align-items: center;
-            padding: 15px 40px;
-            background-color: #1a1a1a;
-            color: #fff;
-        }
-
-        /* [핵심] 로고 + 검색창을 묶어주는 좌측 그룹 */
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 25px; /* 로고와 검색창 사이의 간격 */
-        }
-
-        .navbar .logo a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        /* GNB 통합 검색바 */
-        .search-form {
-            display: flex;
-            gap: 5px;
-        }
-        .search-form input {
-            padding: 6px 12px;
-            border-radius: 4px;
-            border: none;
-            outline: none;
-            width: 220px; /* 검색창 너비 지정 */
-        }
-        .search-form button {
-            padding: 6px 12px;
-            background-color: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* 우측 상단 로그인 메뉴 영역 */
-        .nav-right {
-            display: flex;
-            align-items: center;
-        }
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 15px;
-        }
-        .nav-links a {
-            color: #ddd;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .nav-links a:hover {
-            color: #fff;
-        }
-
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-    </style>
 </head>
 
 <body>
@@ -98,95 +21,67 @@
     <!-- 상단 GNB -->
     <header class="navbar">
         <!-- 1. 좌측 영역: 로고 + 검색창 -->
-        <div class="nav-left">
-            <div class="logo">
-                <a href="{{ url_for('main.index') }}">NNTT</a>
+        <div class="nav_wrap">
+            <div class="nav-left">
+                <div class="logo">
+                    <a href="{{ url_for('main.index') }}"><img src="/static/images/logo_main_3d.png" alt="로고이미지"
+                            class="logo_img"></a>
+                </div>
+
+                <!-- 로고 바로 옆으로 이동한 통합 검색창 -->
+                <form action="{{ url_for('main.index') }}" method="GET" class="search-form">
+                    <input type="text" name="q" placeholder="공연명, 지역명 검색" value="{{ query if query else '' }}">
+                    <button type="submit"><img src="/static/images/search.png" alt="검색버튼" class="search_img"></button>
+                </form>
             </div>
-
-            <!-- 로고 바로 옆으로 이동한 통합 검색창 -->
-            <form action="{{ url_for('main.index') }}" method="GET" class="search-form">
-                <input type="text" name="q" placeholder="공연명, 지역명 검색" value="{{ query if query else '' }}">
-                <button type="submit">검색</button>
-            </form>
-        </div>
-
-        <!-- 2. 우측 영역: 로그인 상태 / 회원 메뉴 -->
-        <div class="nav-right">
-            <ul class="nav-links">
-                {% if g.user %}
-                <li><span>{{ g.user.username }}님</span></li>
-                <li><a href="{{ url_for('auth.update_profile') }}">정보변경</a></li>
-                <li><a href="{{ url_for('booking.my_orders') }}">내 예매 내역</a></li>
-                <li><a href="{{ url_for('auth.logout') }}">로그아웃</a></li>
-                {% else %}
-                <li><a href="{{ url_for('auth.login') }}">로그인</a></li>
-                <li><a href="{{ url_for('auth.register') }}">회원가입</a></li>
-                <li><a href="{{ url_for('booking.my_orders') }}">내 예매 내역</a></li>
-                {% endif %}
-            </ul>
-        </div>
+        	<!-- 2. 우측 영역: 로그인 상태 / 회원 메뉴 -->
+        	<div class="nav-right">
+           		 <ul class="nav-links">
+                	{% if g.user %}
+                	<li><span>{{ g.user.username }}님</span></li>
+                	<li><a href="{{ url_for('auth.update_profile') }}">정보변경</a></li>
+                	<div class="divider-line_top"></div>
+                	<li><a href="{{ url_for('booking.my_orders') }}">내 예매 내역</a></li>
+                	<div class="divider-line_top"></div>
+                	<li><a href="{{ url_for('auth.logout') }}">로그아웃</a></li>
+                
+                	{% else %}
+                	<li><a href="{{ url_for('auth.login') }}">로그인</a></li>
+               	 	<div class="divider-line_top"></div>
+                	<li><a href="{{ url_for('auth.register') }}">회원가입</a></li>                	
+                	{% endif %}
+           		 </ul>
+        	</div>
     </header>
 
     <!-- 메인 컨텐츠 영역 -->
     <main class="container">
         <!-- 장르별 공통 내비게이션 탭 -->
-        <div
-            style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">
-            <!-- 1. 전체 -->
-            <a href="{{ url_for('main.all_performances') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.all_performances' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.all_performances' else '#333' }};">
-                전체
-            </a>
+        <div class="nav-all">
+            <a href="{{ url_for('main.all_performances') }}"
+                class="nav-menu {% if request.endpoint == 'main.all_performances' %}active{% endif %}">전체</a>
 
-            <!-- 2. 뮤지컬 -->
-            <a href="{{ url_for('main.musical_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.musical_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.musical_list' else '#333' }};">
-                뮤지컬
-            </a>
-            
-            <!-- 3. 콘서트 -->
-            <a href="{{ url_for('main.concert_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.concert_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.concert_list' else '#333' }};">
-                콘서트
-            </a>
+            <a href="{{ url_for('main.musical_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.musical_list' %}active{% endif %}">뮤지컬</a>
 
-            <!-- 4. 연극 -->
-            <a href="{{ url_for('main.play_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.play_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.play_list' else '#333' }};">
-                연극
-            </a>
+            <a href="{{ url_for('main.concert_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.concert_list' %}active{% endif %}">콘서트</a>
 
-            <!-- 5. 아동/가족 -->
-            <a href="{{ url_for('main.kids_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.kids_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.kids_list' else '#333' }};">
-                아동/가족
-            </a>
+            <a href="{{ url_for('main.play_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.play_list' %}active{% endif %}">연극</a>
 
-            <!-- 6. 클래식 -->
-            <a href="{{ url_for('main.classic_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.classic_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.classic_list' else '#333' }};">
-                클래식
-            </a>
+            <a href="{{ url_for('main.kids_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.kids_list' %}active{% endif %}">아동/가족</a>
 
-            <!-- 7. 전시 -->
-            <a href="{{ url_for('main.exhib_list') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.exhib_list' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.exhib_list' else '#333' }};">
-                전시
-            </a>
+            <a href="{{ url_for('main.classic_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.classic_list' %}active{% endif %}">클래식</a>
 
-            <!-- 8. 오픈예정 -->
-            <a href="{{ url_for('main.upcoming_performances') }}" style="text-decoration: none; padding: 8px 16px; border-radius: 20px;
-                  background-color: {{ '#333' if request.endpoint == 'main.upcoming_performances' else '#eee' }}; 
-                  color: {{ 'white' if request.endpoint == 'main.upcoming_performances' else '#333' }};">
-                오픈예정
-            </a>
+            <a href="{{ url_for('main.exhib_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.exhib_list' %}active{% endif %}">전시</a>
+
+            <a href="{{ url_for('main.upcoming_list') }}"
+                class="nav-menu {% if request.endpoint == 'main.upcoming_list' %}active{% endif %}">오픈예정</a>
+
         </div>
         {% block content %}
 
@@ -197,9 +92,9 @@
     <script type='text/javascript'>
         // 공지사항, 자주묻는질문 삭제 리스너 추가
         const delete_elements = document.getElementsByClassName("delete_notice");
-        Array.from(delete_elements).forEach(function(element){
-            element.addEventListener('click', function(){
-                if(confirm("정말로 삭제하시겠습니까?")) {
+        Array.from(delete_elements).forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (confirm("정말로 삭제하시겠습니까?")) {
                     location.href = this.dataset.uri;
                 };
             });

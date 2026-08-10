@@ -10,9 +10,15 @@
 <div class="main-banner-container">
     <div class="swiper_banner_main">
         <div class="swiper-wrapper">
-            <div class="swiper-slide"><a href="#">배너 1</a></div>
-            <div class="swiper-slide"><a href="#">배너 2</a></div>
-            <div class="swiper-slide"><a href="#">배너 3</a></div>
+            <div class="swiper-slide"><a href="{{ url_for('auth.register') }}">
+                    <img src="/static/images/banner_big/banner_b_01.png" alt="신규가입">
+                </a></div>
+            <div class="swiper-slide"><a href="{{ url_for('main.upcoming_list') }}">
+                    <img src="/static/images/banner_big/banner_b_02.png" alt="오픈예정">
+                </a></div>
+            <div class="swiper-slide"><a href="#category-price">
+                    <img src="/static/images/banner_big/banner_b_03.png" alt="예산에맞는티켓">
+                </a></div>
         </div>
 
         <!-- 스와이퍼 넘기기 버튼 -->
@@ -96,7 +102,7 @@
 <div class="category-upcoming">
 
     <h2 class="upcoming-name">오픈예정</h2>
-    <a href="{{ url_for('main.upcoming_performances') }}" class="all-upcoming">전체보기</a>
+    <a href="{{ url_for('main.upcoming_list') }}" class="all-upcoming">전체보기</a>
 
 
 
@@ -133,15 +139,27 @@
 </div>
 
 <div class="mini-banner">
-    <a href="#" class="mini-list">배너1</a>
-    <a href="#" class="mini-list">배너2</a>
-    <a href="#" class="mini-list">배너3</a>
-    <a href="#" class="mini-list">배너4</a>
-    <a href="#" class="mini-list">배너5</a>
-    <a href="#" class="mini-list">배너6</a>
+    <a href="{{ url_for('auth.register') }}" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_01.png') }}" alt="신규가입">
+    </a>
+    <a href="{{ url_for('main.upcoming_list') }}" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_02.png') }}" alt="오픈예정">
+    </a>
+    <a href="#category-price" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_03.png') }}" alt="예산에맞는티켓">
+    </a>
+    <a href="{{ url_for('main.performance_detail', perf_id='PF296289') }}" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_04.png') }}" alt="선데이_바이브">
+    </a>
+    <a href="{{ url_for('main.performance_detail', perf_id='PF296312') }}" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_05.png') }}" alt="드림하이_시즌3:리부트">
+    </a>
+    <a href="{{ url_for('main.performance_detail', perf_id='PF297346') }}" class="mini-list">
+        <img src="{{ url_for('static', filename='images/banner_small/banner_s_06.png') }}" alt="인어공주">
+    </a>
 </div>
 
-<div class="category-price">
+<div class="category-price" id="category-price">
     <div class="price-header">
         <h2 class="price-name">예산에 맞는 티켓</h2>
         <ul class="price-tabs">

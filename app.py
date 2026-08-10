@@ -5,13 +5,18 @@ from init_db import db, migrate  # init_db에서 db 생성자 내용 가져온�
 from views import auth_views, booking
 from views.support import notice_views, faq_views
 from filter.filter_date import format_datetime
+from extensions import cache  # cache 가져오기
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
+    app.config['CACHE_TYPE'] = 'SimpleCache'
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 3600
+
     db.init_app(app) # db 초기화
     migrate.init_app(app, db) # app과 db를 연결한다
+    cache.init_app(app) # cache 초기화
 
     # 블루프린트 등록
     app.register_blueprint(main_bp)

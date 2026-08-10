@@ -3,8 +3,8 @@ from flask import Blueprint, render_template, request, abort, jsonify
 import requests, re
 import xml.etree.ElementTree as ET
 from forms import UserCreateForm
-from flask import render_template, request
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from extensions import cache
 
 main_bp = Blueprint('main', __name__)
 KOPIS_API_KEY = "19fc20e402ce49df83b5d2f6e9d50822"
@@ -104,13 +104,14 @@ def get_sorted_upcoming_performances(limit=None):
     return sorted_perfs
 
 @main_bp.route('/api/upcoming')
+@cache.cached(timeout=1800)
 def api_upcoming_performances():
     # 공통 함수 사용 (상위 5개만)
     upcoming_5 = get_sorted_upcoming_performances(limit=5)
     return jsonify(upcoming_5)
 
-@main_bp.route('/performances/upcoming')
-def upcoming_performances():
+@main_bp.route('/performances/upcoming_list')
+def upcoming_list():
     # 공통 함수 사용 (전체 50개)
     upcoming_all = get_sorted_upcoming_performances()
     return render_template('upcoming_list.html', performances=upcoming_all)
@@ -143,13 +144,6 @@ def play_list():
     all_perfs = get_kopis_performances()
     plays = [p for p in all_perfs if p.get('genrenm') == '연극']
     return render_template('play.html', performances=plays)
-
-# 박근수 추가 2026-08-05
-# 아동/가족 전용 페이지
-@main_bp.route('/performances/kids')
-def kids_list():
-    kids_perfs = get_kopis_performances(kid='Y')
-    return render_template('kids.html', performances=kids_perfs)
 
 # 클래식 전용 페이지 (KOPIS 장르코드 CCCA: 서양음악/클래식)
 @main_bp.route('/performances/classic')
@@ -196,7 +190,6 @@ def performance_detail(perf_id):
 
         # [prfplcDetailRequest] 공연시설 상세 API에서 adres(도로명 주소) 추출
         fclty_id = get_txt('fcltyid')
-        address = ''
         if fclty_id:
             try:
                 f_url = f"http://www.kopis.or.kr/openApi/restful/prfplc/{fclty_id}"
@@ -327,7 +320,7 @@ def privacy():
 def inquiry():
     return render_template('inquiry.html')
 
-# 가격 별 정보 수집
+## 가격 별 정보 수집
 def process_single_performance(perf, price_param):
     """단일 공연 정보를 받아 가격을 파싱하고 조건에 맞는지 검증하는 함수"""
     perf_id = perf.get('mt20id')
@@ -349,8 +342,10 @@ def process_single_performance(perf, price_param):
         
         # '원' 앞의 숫자를 추출
         raw_prices = re.findall(r'([\d,]+)\s*원', pcse)
-        prices = [int(p.replace(',', '')) for p in raw_prices if int(p.replace(',', '')) >= 1000]
-        min_price = min(prices) if prices else 0
+        parsed_prices = [int(p.replace(',', '')) for p in raw_prices]
+        valid_prices = [p for p in parsed_prices if p >= 1000]
+
+        min_price = min(valid_prices) if valid_prices else 0
 
         if min_price == 0:
             return None
@@ -365,9 +360,11 @@ def process_single_performance(perf, price_param):
             is_target = True
 
         if is_target:
-            poster_url = perf.get('poster', '')
-            if poster_url and not poster_url.startswith('http'):
-                poster_url = f"http://www.kopis.or.kr{poster_url}"
+            poster_url = perf.get('poster', '')            
+            if poster_url:
+                if not poster_url.startswith('http'):
+                    poster_url = f"http://www.kopis.or.kr{poster_url}"
+                poster_url = f"https://wsrv.nl/?url={poster_url.replace('http://', 'https://')}&w=300&output=webp"
 
             return {
                 'mt20id': perf_id,
@@ -381,6 +378,7 @@ def process_single_performance(perf, price_param):
         return None
 
 @main_bp.route('/api/tickets/price')
+@cache.cached(timeout=1800, query_string=True)
 def api_tickets_by_price():
     price_param = request.args.get('price', '10k')
     raw_performances = get_kopis_performances(rows='100')
@@ -404,3 +402,88 @@ def api_tickets_by_price():
                     break
 
     return jsonify(filtered_results)
+
+
+## 아동/가족 카테고리 분류 
+def parse_min_age(prfage_str):
+    """
+    KOPIS API의 텍스트 형태 관람 연령(예: "만 7세 이상", "36개월 이상")을
+    숫자 형태의 '최소 관람 연령(세)'으로 변환하는 함수
+    """
+    if not prfage_str:
+        return None
+        
+    text = prfage_str.strip()
+    # 전체 관람가
+    if '전체' in text:
+        return 0
+    
+    # N개월 이상 (36개월 -> 36 // 12 = 3세)
+    if m := re.search(r'(\d+)\s*개월', text):
+        return int(m.group(1)) // 12
+    
+    # "N세 이상" / "만 N세" ("만 7세" -> 7세)
+    if m := re.search(r'(\d+)\s*세', text):    
+        return int(m.group(1))
+    
+    # "초등학생 이상" 또는 "미취학 아동" 등의 키워드가 포함된 경우 기본 8세 적용
+    if any(k in text for k in ('초등', '미취학')):
+        return 8
+    
+    # 해석할 수 없는 텍스트인 경우 None 반환    
+    return None
+
+def process_single_kid_perf(perf):
+    """
+    단일 공연의 상세 정보 API를 조회하여 관람 연령을 검증하는 Worker 함수
+    (멀티스레딩 환경에서 각 스레드가 개별 실행함)
+    """
+    perf_id = perf.get('mt20id')
+    if not perf_id:
+        return None
+
+    try:
+        # KOPIS 상세 정보 API 호출 (관람 연령 정보 : prfage)
+        detail_url = f"http://www.kopis.or.kr/openApi/restful/pblprfr/{perf_id}"
+        res = requests.get(detail_url, params={'service': KOPIS_API_KEY}, timeout=3)
+        if res.status_code != 200:
+            return None
+
+        # XML 응답 데이터 파싱
+        root = ET.fromstring(res.content)
+        db = root.find('db')
+        if db is None:
+            return None
+
+        # 관람 연령(prfage) 추출 및 최소 연령 계산
+        prfage = db.findtext('prfage') or ''
+        min_age = parse_min_age(prfage)
+
+        # 최소 관람 연령이 12세 미만(아동/어린이 대상)인 경우만 데이터 채택
+        if min_age is not None and min_age < 12:
+            perf['prfage'] = prfage
+            perf['min_age'] = min_age
+            return perf
+
+    except Exception as e:
+        print(f"아동 연령 파싱 오류 ({perf_id}): {e}")
+
+    return None
+
+@main_bp.route('/performances/kids')
+@cache.cached(timeout=1800)
+def kids_list():    
+    raw_performances = get_kopis_performances(kid='Y', rows='50')
+    kids_perfs = []
+
+    # 10개 스레드로 병렬 상세 조회 및 12세 이하 필터링
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [
+            executor.submit(process_single_kid_perf, perf)
+            for perf in raw_performances
+        ]
+        
+        kids_perfs = [res for f in as_completed(futures) if (res := f.result())]
+
+    # 최종 필터링된 아동 공연 목록을 템플릿(kids.html)으로 전달하여 렌더링
+    return render_template('kids.html', performances=kids_perfs)
