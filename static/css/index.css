@@ -1,11 +1,14 @@
-/* 기본 여백 초기화 */
+html {
+    scroll-behavior: smooth;
+}
+
 /* 스와이퍼 */
 .swiper_banner_main {
     position: relative;
     width: 100%;
-    height: 320px;
-    background-color: #C96F4A;
-    border-radius: 50px;
+    height: 370px;
+    border: 1px solid #84848437;
+    border-radius: 40px;
     overflow: hidden;
     margin-top: 50px;
 }
@@ -20,6 +23,20 @@
     align-items: center;
     justify-content: center;
     height: 100%;
+}
+
+.swiper-slide a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 380px;
+    display: block;
 }
 
 /* 스와이퍼 우하단 버튼 */
@@ -37,14 +54,14 @@
     border-radius: 50%;
     width: 33px;
     height: 33px;
-    padding-left: 2px;
 
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
     transition: background-color 0.2s ease;
-
+    font-size: 15px;
 }
 
 /* 스와이퍼 하단 메뉴 */
@@ -103,11 +120,12 @@
 /* 카테고리 네비 */
 .category-nav {
     display: flex;
-    gap: 85px;
+    justify-content: center;
+    gap: 70px;
     list-style: none;
     padding: 0;
     margin-top: 60px;
-    margin-left: 35px;
+
 }
 
 .category-link {
@@ -122,29 +140,32 @@
 }
 
 .category-img {
-    width: 68px;
-    height: 68px;
-    border-radius: 20px;
+    width: 80px;
+    height: 80px;
 
-    padding: 6px;
-    border: 1px solid #e2e8f0;
+    padding: 1px;
+    border: 1px solid #c1c1c19d;
     border-radius: 10px;
     background-color: #6C8E9071;
+    
 
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .category-img:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
 }
+
 .category-img img {
-    width: 100%;
-    height: 100%;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
     border-radius: 5px;
 }
@@ -158,12 +179,12 @@
 /* 오픈예정 */
 .upcoming-name {
     text-align: center;
-    margin-top: 80px;
+    margin-top: 70px;
     font-size: 30px;
     font-weight: bold;
 }
 
-.all-upcoming {    
+.all-upcoming {
     font-size: 15px;
     font-weight: 500;
     float: right;
@@ -177,22 +198,24 @@
     justify-content: center;
     width: 100%;
 }
+
 .upcoming-card {
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
     width: 220px;
     flex-shrink: 0;
     border: 1px solid #cacaca;
-    background-color: #ffffff; 
+    background-color: #ffffff;
     border-radius: 20px;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin-top: 15px;
 }
+
 .upcoming-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
-                0 10px 20px rgba(0, 0, 0.1, 0.15) ;
+        0 10px 20px rgba(0, 0, 0.1, 0.15);
 }
 
 .upcoming-list {
@@ -207,15 +230,15 @@
 .upcoming-list img {
     width: 100%;
     height: 100%;
-    object-fit: cover;     
+    object-fit: cover;
 }
 
 /* 하단 정보 박스 (제목, 날짜 등) */
 .upcoming-info {
     display: flex;
-    flex-direction: column;  
+    flex-direction: column;
     text-align: center;
-    padding: 7px 7px;        
+    padding: 7px 7px;
     gap: 4px;
     box-sizing: border-box;
 }
@@ -229,14 +252,14 @@
 .upcoming-title {
     font-size: 13px;
     font-weight: 550;
-    line-height: 1.3;   
-    
+    line-height: 1.3;
+
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    -webkit-box-orient: vertical; 
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;    
+    text-overflow: ellipsis;
 }
 
 /* 미니 배너 */
@@ -246,8 +269,9 @@
     /* 1fr(1비율) 크기의 열을 3개 생성 -> 3열 배치 */
     justify-content: center;
 
-    gap: 30px 20px;
+    gap: 20px;
     margin-top: 120px;
+
 }
 
 
@@ -256,20 +280,36 @@
     align-items: center;
     justify-content: center;
 
-    width: 340px;
-    height: 100px;
+    width: 360px;
+    height: 130px;
 
-    background-color: #6C8E9071;
+
     border-radius: 20px;
+    border: 1px solid #6c8e906a;
+    overflow: hidden;
+}
 
+.mini-list a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 70px;
+}
+
+.mini-list img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 360px;
+    height: 130px;
 }
 
 /* 장르별 랭킹 */
-.price-name {    
+.price-name {
     margin-top: 100px;
     font-size: 30px;
-    font-weight: bold;
-
+    font-weight: bold; 
 }
 
 .price-tabs {
@@ -278,10 +318,10 @@
     list-style: none;
     padding: 0;
     margin: 30px 0 30px 0;
-    
+
 }
 
-.tab-item{
+.tab-item {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -289,17 +329,19 @@
     height: 45px;
     width: 100px;
     border-radius: 30px;
+    border: 1px solid #6c8e9042;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    background-color: #e6e6e6;    
+    background-color: #e6e6e6;
 }
 
-.tab-item:hover {    
+.tab-item:hover {
     background-color: #a2a1a1a1;
 }
-.tab-item.active {    
+
+.tab-item.active {
     background-color: #717171;
     color: #ffffff;
     font-weight: bold;
@@ -310,85 +352,287 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-bottom: 100px;
-    
+    margin-bottom: 90px;
+
 }
+
 .price-card {
-    display: flex;    
+    display: flex;
     overflow: hidden;
     border: 1px solid #cacaca;
-    border-radius: 8px;    
+    border-radius: 8px;
     background: #fff;
-    transition: transform 0.2s, box-shadow 0.2s;
-    width: 500px;
-    height: 200px;
+    width: 480px;
+    height: 220px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .price-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
-                0 10px 20px rgba(0, 0, 0.1, 0.15) ;
+        0 10px 20px rgba(0, 0, 0.1, 0.15);
 }
-.price-card > a {
+
+.price-card>a {
     display: flex;
     width: 100%;
     height: 100%;
     text-decoration: none;
-    color: inherit;    
+    color: inherit;
 }
-.price-list{
-    width: 30%;
+
+.price-list {
+    width: 35%;
     height: 100%;
-    flex-shrink: 0; /* 비율 유지 */
+    flex-shrink: 0;
+    /* 비율 유지 */
     background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .poster-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 박스 비율에 맞춰 이미지를 채움 (원본 비율 유지하며 잘림) */
+    object-fit: cover;
+    /* 박스 비율에 맞춰 이미지를 채움 (원본 비율 유지하며 잘림) */
 }
 
 .price-info {
     width: 65%;
     padding: 20px;
     display: flex;
-    flex-direction: column;    
-    
+    flex-direction: column;
+
 }
-.price-title{
+
+.price-title {
     font-size: 20px;
     font-weight: bold;
     line-height: 1.3;
     margin-top: 15px;
 }
-.price-date{
+
+.price-date {
     font-size: 12px;
     color: #138f36;
     font-weight: 450;
-    margin-top: auto; 
+    margin-top: auto;
     margin-bottom: 7px;
 }
-.price-amount{
+
+.price-amount {
     font-size: 15px;
-    font-weight: 500;       
+    font-weight: 500;
 }
 
 /* 오류 텍스트 */
-.loading-text, .empty-text, .error-text {    
+.loading-text,
+.empty-text,
+.error-text {
     grid-column: 1 / -1;
     display: flex;
     width: 100%;
     flex: 0 0 100%;
-    justify-content: center; 
-    align-items: center;                 
-    min-height: 200px;       
-    
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    color: #666;          
+    color: #666;
+}
+
+/* 태블릿 & 모바일 반응형 스타일 (1024px 이하) */
+@media (max-width: 1024px) {
+
+    /* 메인 스와이퍼 배너 */
+    .swiper_banner_main {
+        height: 195px;
+        border-radius: 20px;
+        margin-top: 35px;
+    }
+
+    .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .swiper-slide a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide img {
+        width: 100%;
+        height: 200px;
+        display: block;
+    }
+
+    .swiper_banner_main .swiper-button-prev,
+    .swiper_banner_main .swiper-button-next {
+        width: 32px;
+        height: 32px;
+    }
+
+    .swiper_banner_main .swiper-button-prev::after,
+    .swiper_banner_main .swiper-button-next::after {
+        font-size: 18px;
+    }
+
+    .banner-controls {
+        right: 15px;
+        bottom: 15px;
+        padding: 4px 10px;
+    }
+
+    /* 카테고리 네비게이션 */
+    .category-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px 10px;
+        max-width: 500px;
+    }
+
+    .category-nav>li {
+        display: flex;
+        justify-content: center;
+        margin-top: -20px;
+    }
+
+    .category-nav>li:nth-child(-n+3) {
+        flex: 0 0 calc(33.333% - 10px);
+    }
+
+    .category-nav>li:nth-child(n+4) {
+        flex: 0 0 calc(25% - 10px);
+    }
+
+    .category-img {
+        width: 60px;
+        height: 60px;
+    }
+    .category-img img{
+        width: 60px;
+        height: 60px;    
+    }
+
+    .category-name {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* 오픈 예정 */
+    .upcoming-name {
+        margin-top: 50px;
+        font-size: 24px;
+    }
+
+    .all-upcoming {
+        margin-bottom: 25px;
+    }
+
+    .upcoming {
+        flex-wrap: wrap;
+        /* 카드가 가로로 넘치지 않게 줄바꿈 */
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .upcoming-card {
+        width: calc(50% - 10px);
+        /* 1024px 이하에서는 2개씩 배치 */
+        max-width: 220px;
+        margin-top: 0;
+    }
+
+    .upcoming-list {
+        height: 280px;
+        /* 카드 이미지 높이 조정 */
+    }
+
+    /* 4. 미니 배너 */
+    .mini-banner {
+        grid-template-columns: repeat(2, 1fr);
+        /* 3열 -> 2열로 변경 */
+        gap: 15px;
+        margin-top: 60px;
+        justify-items: center;
+    }
+
+    .mini-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 360px;
+        height: 80px;
+    }
+
+    .mini-list a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    .mini-list img{
+        width: 100%;
+        height: 80px;
+        display: block;
+    }
+
+    /* 장르별 랭킹 & 가격 배너 */
+    .price-name {
+        margin-top: 60px;
+        font-size: 24px;
+    }
+
+    .price-tabs {
+        gap: 10px;
+        margin: 20px 0;
+        overflow-x: auto;
+        /* 탭이 넘치면 가로 스크롤 가능하도록 설정 */
+        white-space: nowrap;
+        padding-bottom: 5px;
+    }
+
+    .tab-item {
+        width: 85px;
+        height: 38px;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    .price {
+        grid-template-columns: 1fr;
+        /* 2열 -> 1열 세로 배치 */
+        gap: 15px;
+        margin-bottom: 60px;
+        justify-items: center;
+    }
+
+    .price-card {
+        width: 100%;
+        /* 고정 500px 해제 */
+        max-width: 500px;
+        height: 160px;
+    }
+
+    .price-title {
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    .price-info {
+        padding: 12px;
+    }
 }

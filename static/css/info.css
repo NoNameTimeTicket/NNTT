@@ -1,0 +1,141 @@
+/* 공연 제목 */
+.info_name {
+    font-size: 1.5rem;
+    margin: 25px 0;
+    font-weight: bold;
+}
+
+/* 공연 */
+.info {
+    display: grid;
+    /* 기본적으로 한 줄에 균등하게 4개 배치 */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    max-width: 100%;
+}
+
+.perf-card {
+    display: flex;
+    flex-direction: column;
+    width: 265px;
+
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    overflow: hidden;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.perf-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.perf-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+
+}
+
+/* 포스터 이미지 */
+.perf-poster {
+    width: 100%;
+    height: 370px;
+
+    background-color: #dedede;
+
+    object-fit: contain;
+    margin-bottom: 3px;
+}
+
+.perf-text {
+    padding: 6px 12px;    
+}
+
+/* 장르 태그 */
+.perf-genre {
+    font-size: 0.8rem;
+    background: #ff4757;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+
+}
+
+/* 공연 제목 */
+.perf-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 7px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    
+
+}
+
+/* 기간 및 공연장 */
+.perf-date {
+    color: #138f36;
+    font-size: 0.85rem;
+    margin: 4px 0;
+    
+}
+
+.perf-facility {
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+/* 상세보기 및 예매 버튼 */
+.perf-btn {
+    display: block;
+    text-align: center;
+    padding: 10px 12px;
+    background: #333;
+    color: white;
+    text-decoration: none;
+    overflow: hidden;
+    transition: background-color 0.2s ease;
+}
+
+.perf-btn:hover {
+    background: #555;
+}
+
+/* 데이터가 없을 때 */
+.no-data {
+    grid-column: 1 / -1;
+    padding: 40px 0;
+    text-align: center;
+    color: #888;
+}
+
+/* 화면 너비가 1024px 이하일 때 (태블릿/모바일 반응형) */
+@media (max-width: 1024px) {
+    .info {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 15px;
+        padding: 0 10px;
+    }
+    .perf-card{
+        width: 200px;
+    }
+    .perf-poster {
+        height: 220px; 
+    }
+
+    /* 5행(총 10개)까지만 화면에 보이고 11번째부터 숨김 처리 */
+    .info>.perf-card:nth-child(n+11) {
+        display: none;
+    }
+}
