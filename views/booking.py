@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from datetime import datetime
-
+import requests
 # 데이터베이스(DB) 연결 및 모델 가져오기
 from init_db import db
 from table_model import Reservation
@@ -11,6 +11,9 @@ import re # 글자 속에서 원하는 패턴(숫자)을 찾아내는 내는 함
 
 # 플라스크 블루프린트 설정 (/booking URL 관리)
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
+
+# 카드 결제를 역할 서버 주소
+PAYMENT_SERVER_URL = "http://127.0.0.1:8000/api/v1/payment"
 
 # =========================================================
 #  새로 추가하는 코드
@@ -206,17 +209,40 @@ def pay_process():
             amount_ticket= ticket_count,
             total_price= total_price
         )
-        db.session.add(new_reservation)
-        db.session.commit()
 
-        # 성공 알림창 띄우고 마이페이지로 이동 후 팝업 닫기
-        return """<script>
-            alert('공연 예매 및 가상결제가 성공적으로 완료되었습니다!');
-            if (window.opener && !window.opener.closed) {
-                window.opener.location.href = '/booking/orders';
-            }
-            window.close();
-        </script>"""
+        # FastAPI 서버로 결재 정보 파라미터 설정
+        payload_to_server = {
+            "user_id": g.user.username,
+            "price": total_price,
+            "reservation_date" : datetime.now()
+        }
+
+        response = requests.post(PAYMENT_SERVER_URL, json=payload_to_server, timeout=5)
+
+        json_status_value = response.json().get("status")
+        print(f"response.status_code = {response.status_code}")        
+        print(f"response.json().get(status) = {json_status_value}")
+
+        if response.status_code == 200 and json_status_value == "APPROVED":
+            # 결제 성공시에만 DB 커밋
+            db.session.add(new_reservation)
+            db.session.commit()
+            return """<script>
+                    alert('공연 예매 및 가상결제가 성공적으로 완료되었습니다!');
+                    if (window.opener && !window.opener.closed) {
+                        window.opener.location.href = '/booking/orders';
+                    }
+                    window.close();
+                </script>"""
+        else:
+            # 결제 실패 시 DB 롤백
+            db.session.rollback()
+            return "<script>alert('결제에 실패했습니다. 다시 시도해주세요.'); history.back();</script>"
+
+    except requests.exceptions.RequestException as e:
+        # 네트워크/서버 통신 에러 처리
+        db.session.rollback()
+        return "<script>alert('결제 서버와 통신 중 에러가 발생했습니다'); history.back();</script>"
     
     except Exception as error:
         db.session.rollback()
