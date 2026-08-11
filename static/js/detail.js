@@ -20,7 +20,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         
         // 정보들을 가지고 갈 팝업창 주소를 만듭니다.
-        const popupUrl = `/booking/popup?performance_id=${perfId}&title=${title}&place_name=${place}&address=${address}&ticket_price=${price}&time_notice=${timeNotice}`;
+        const popupUrl = `/booking/popup`
+        + `?performance_id=${perfId}`
+        + `&title=${title}`
+        + `&place_name=${place}`
+        + `&address=${address}`
+        + `&ticket_price=${price}`
+        + `&time_notice=${timeNotice}`
+        + `&start_date=${startDate}`
+        + `&end_date=${endDate}`;
 
         // width를 780px로 140px 더 넓혀서 달력이 들어갈 공간을 확보했습니다.
         window.open(popupUrl, 'BookingPopup', 'width=780,height=620,scrollbars=yes,resizable=no');

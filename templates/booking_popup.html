@@ -30,9 +30,13 @@
             <div class="left-box">
                 <label class="form-label">📆 관람 날짜 선택</label>
                 <!-- 달력에서 클릭한 날짜가 저장되는 상자 -->
-                <input type="hidden" id="datePicker" name="booking_date" value="{{ data.today }}" required>
+                <input type="hidden" id="datePicker" name="booking_date" value="{{ data.start_date }}" required>
                 <!-- 🌟 자바스크립트(booking.js)가 여기에 큼직한 월력표를 완성해 줍니다 -->
-                <div id="customCalendar" class="calendar-container"></div>
+                <div id="customCalendar"
+                     class="calendar-container"
+                     data-start-date="{{ data.start_date }}"
+                     data-end-date="{{ data.end_date }}"
+                     data-allowed-days="{{ data.allowed_days }}"></div>
             </div>
 
             <!-- 👉 [오른쪽 동네] 예약자 정보, 회차 선택, 인원 선택 구역 -->

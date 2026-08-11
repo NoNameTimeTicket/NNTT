@@ -47,6 +47,60 @@ def parse_ticket_prices(raw_price_str):
 
 
 # =========================================================
+# ★ [신규] 공연 요일 문구("토요일 ~ 일요일")를 숫자("0,6")로 변환하는 함수
+# (0=일요일, 1=월요일, 2=화요일, 3=수요일, 4=목요일, 5=금요일, 6=토요일)
+# =========================================================
+def parse_allowed_days(notice_text):
+    # [1단계] 안내 문구가 비어있거나 없으면 모든 요일(일~토)을 다 선택할 수 있게 합니다
+    if not notice_text:
+        return "0, 1, 2, 3, 4, 5, 6" # 기본값: 전 요일 허용
+
+    # [2단계] 요일 이름을 숫자로 바꾸기 위한 기준 배열과 허용할 요일을 담을 주머니(set) 준비
+    day_names = ['일', '월', '화', '수', '목', '금', '토']
+    allowed = set() # 중복을 자동으로 막아주는 집합(Set) 주머니입니다.
+
+    # [3단계] "X요일 ~ Y요일" 형태의 범위 문구 찾기 (예: "토요일 ~ 일요일", "화 ~ 금")
+    # 정규식 설명: 요일 이름 + '요일' 글자(생략가능) + 물결(~) + 요일 이름
+    match = re.search(r'([일월화수목금토])요일?\s*~\s*([일월화수목금토])요일?', notice_text)
+
+ 
+    if match:
+        # 시작 요일과 끝 요일의 숫자 위치(인덱스)를 알아냅니다.
+        # 예: '토' -> 6, '일' -> 0
+        start_idx = day_names.index(match.group(1))
+        end_idx = day_names.index(match.group(2))
+
+        curr = start_idx
+        while True:
+            allowed.add(curr) # 현재 요일 숫자를 주머니에 넣습니다.
+            if curr == end_idx:
+                break # 끝 요일까지 다 넣었으면 반복을 멈춥니다.
+            curr = (curr + 1) % 7 # 토요일(6) 다음은 7이 아니라 0(일요일)으로 되돌아가게 돌립니다.
+
+    # ★ 추가 단일 요일(예: "토요일", "일요일") 개별 추출해서 주머니에 다 담기
+    single_days = re.findall(r'([일월화수목금토])요일?', notice_text)
+    for day in single_days:
+        allowed.add(day_names.index(day)) # '토'(6), '일'(0)도 빠짐없이 주머니에 담김
+
+     
+    
+
+    # [4단계] 문구 속에 '평일'이나 '주말'이라는 단어가 들어있는지 체크합니다.
+    if '평일' in notice_text:
+        allowed.update([1, 2, 3, 4, 5]) # 월(1) ~ 금(5) 추가
+    if '주말' in notice_text:
+        allowed.update([0, 6]) # 일(0), 토(6) 추가
+
+    # [5단계] 문 분석을 거쳤는데도 뽑아낸 요일이 하나도 없다면, 안전하게 전 요일을 허용합니다.
+    if not allowed:
+        return "0, 1, 2, 3, 4, 5, 6"
+
+    # [6단계] 주머니에 모인 숫자를 순서대로 정렬한 뒤, 자바스크립트가 쓰기 좋게 "0,6" 문자열로 만듭니다.
+    # 예: {6, 0} -> [0, 6] -> "0,6"
+    return ",".join(map(str, sorted(list(allowed))))
+
+
+# =========================================================
 # 1. 팝업창 열릴 때 HTML로 데이터 전달해 주는 역할
 # =========================================================
 @booking_bp.route('/popup')
@@ -71,6 +125,23 @@ def popup():
     available_times = parse_kopis_times(dtguidance) # 공연 회차 시간 목록
     today_date = datetime.now().strftime('%Y-%m-%d') # 오늘 날짜 (YYYY-MM-DD)
 
+    # URL에서 KOPIS 공연 기간 받아와서 점(.)을 하이픈(-)으로 변경
+    raw_start = request.args.get('start_date', today_date).replace('.', '-').strip()
+    raw_end = request.args.get('end_date', today_date).replace('.', '-').strip()
+
+    # 오늘 날짜와 공연 시작일 중 더 나중 날짜를 start_date로 선택 (과거 날짜 차단!)
+    start_date = max(today_date, raw_start)
+    end_date = raw_end
+
+    if end_date < start_date:
+        end_date = start_date
+
+    allowed_days = parse_allowed_days(dtguidance)
+
+
+        
+
+
     # 3) HTML({{ data.xxx }})로 보낼 상자(data)를 포장합니다!
     popup_data = {
         'performance_id': performance_id,
@@ -82,6 +153,9 @@ def popup():
         'ticket_options' : ticket_options,        #티켓 가격 선택
         'available_times': available_times,     # 공연 시간 목록
         'today': today_date,                   # 오늘 날짜
+        'start_date': start_date, # ★ 달력 시작일 (오늘 이전 과거 날짜는 자동 제외됨)
+        'end_date': end_date, # ★ 달력 종료일 (공연 끝나는 날)
+        'allowed_days' : allowed_days, # 달력요일
         'user_phone': getattr(g.user, 'phone', '010-0000-0000') or '010-0000-0000'
     }
 

@@ -5,6 +5,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // HTML에 있는 요소(상자)들을 자바스크립트로 가져옵니다.
     const calendarContainer = document.getElementById('customCalendar');
     const dateInput = document.getElementById('datePicker');
+    
+    // =========================================================
+    // ★ [추가 1] HTML data- 속성에서 백엔드가 계산해준 시작일/종료일 읽어오기
+    // (start_date: '오늘'과 '공연시작일' 중 더 나중 날짜)
+    // =========================================================
+    const startDateStr = calendarContainer ? calendarContainer.getAttribute('data-start-date') : '';
+    const endDateStr = calendarContainer ? calendarContainer.getAttribute('data-end-date') : '';
+    
+    // ★ 백엔드가 보낸 "0,6"을 [0, 6] 숫자 배열로 가져옵니다.
+    const allowedDays = (calendarContainer ? calendarContainer.getAttribute('data-allowed-days') : '0,1,2,3,4,5,6')
+                        .split(',')
+                        .map(Number);
+
 
     // 오늘 날짜 정보 계산하기
     const today = new Date();
@@ -52,17 +65,29 @@ document.addEventListener('DOMContentLoaded', function () {
             const dd = String(date).padStart(2, '0');
             const fullStr = `${yyyy}-${mm}-${dd}`;
 
-            // 지나간 과거 날짜는 클릭하지 못하게 막습니다.
-            today.setHours(0, 0, 0, 0);
-            const isPast = dateObj < today;
+            // =========================================================
+            // ★ [수정 2] 기존 'isPast(과거 날짜)' 체크 로직 제거 -> 백엔드 '공연 기간' 범위 비교로 교체
+            // startDateStr 미만(과거 및 시작 전) 및 endDateStr 초과(종료 후) 클릭 차단
+            // =========================================================
+            let isDisabled = false;
+            if (startDateStr && fullStr < startDateStr) isDisabled = true;
+            if (endDateStr && fullStr > endDateStr) isDisabled = true;
+
+            // ★ [추가] 오늘/시작일/종류일 체크 뒤에 요일 체크 2줄 추가!
+            const dayOfWeek = dateObj.getDay();
+            if (!allowedDays.includes(dayOfWeek)) {
+                isDisabled = true;
+            }
+
             const isSelected = fullStr === selectedDateStr;
 
             let classes = ['cal-date'];
-            if (isPast) classes.push('disabled');     // 지나간 날짜 스타일
+            if (isDisabled) classes.push('disabled');  // 선택 불가능한 날짜 스타일 적용
             if (isSelected) classes.push('selected'); // 선택된 날짜 스타일
 
             html += `<div class="${classes.join(' ')}" data-date="${fullStr}">${date}</div>`;
         }
+
 
         html += `</div>`;
         

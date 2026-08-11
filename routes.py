@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, abort, jsonify
 import requests, re
 import xml.etree.ElementTree as ET
 from forms import UserCreateForm
+from flask import render_template, request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from extensions import cache
 
@@ -145,6 +146,10 @@ def play_list():
     plays = [p for p in all_perfs if p.get('genrenm') == '연극']
     return render_template('play.html', performances=plays)
 
+
+
+
+
 # 클래식 전용 페이지 (KOPIS 장르코드 CCCA: 서양음악/클래식)
 @main_bp.route('/performances/classic')
 def classic_list():
@@ -190,6 +195,7 @@ def performance_detail(perf_id):
 
         # [prfplcDetailRequest] 공연시설 상세 API에서 adres(도로명 주소) 추출
         fclty_id = get_txt('fcltyid')
+        address = ''
         if fclty_id:
             try:
                 f_url = f"http://www.kopis.or.kr/openApi/restful/prfplc/{fclty_id}"
