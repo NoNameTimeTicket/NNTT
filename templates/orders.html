@@ -10,7 +10,7 @@
     <div class="orders-top">
         <h2>📋 내 예매 내역</h2>
         <div class="filter-box">
-            <label for="monthFilter">월별보기:</label>
+            <label for="monthFilter">월별보기</label>
             <select id="monthFilter" class="month-select" onchange="filterByMonth(this.value)">
                 <option value="" {% if not selected_month %}selected{% endif %}>전체 보기</option>
                 {% for month in available_months %}

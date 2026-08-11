@@ -27,7 +27,9 @@
         <!-- 우측: 상세 데이터 표 -->
         <div class="perf-info-wrap">
             <h2 class="perf-title">{{ performance.title }}</h2>
-            <p class="perf-id">공연 ID: {{ performance.perf_id }}</p>
+            {% if g.user.username == 'admin' %}
+            	<p class="perf-id">공연 ID: {{ performance.perf_id }}</p>
+            {% endif %}
 
             <table class="perf-info-table">
                 <tr>

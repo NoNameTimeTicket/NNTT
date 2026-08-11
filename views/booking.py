@@ -243,8 +243,8 @@ def my_orders():
 
         # 4. 드롭다운 선택상자용 (년-월) 목록 중복 없이 만들기
         available_months = sorted(list({
-            item.reservation_date.strftime('%Y-%m')
-            for item in user_reservation if item.reservation_date
+            item.real_play_date.strftime('%Y-%m')
+            for item in user_reservation if item.real_play_date
         }), reverse=True)
 
         # 5. 월을 선택했다면 해당 월의 내역만 필터링
@@ -252,9 +252,9 @@ def my_orders():
             year_num, month_num = map(int, selected_month.split('-'))
             user_reservation = [
                 item for item in user_reservation
-                if item.reservation_date and
-                   item.reservation_date.year == year_num and
-                   item.reservation_date.month == month_num
+                if item.real_play_date and
+                   item.real_play_date.year == year_num and
+                   item.real_play_date.month == month_num
             ]
     except Exception as error:
         print(f"예매 내역 조회 오류: {error}")
