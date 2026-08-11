@@ -1,13 +1,12 @@
 # 팝업 예매 & 가상 결제 백엔드 박근수 2026-08-06, 2026-08-07 현장판매, 사전판매관련 내용 수정
 
-# C:\projects\NNTT\views\booking.py
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from datetime import datetime
 
 # 데이터베이스(DB) 연결 및 모델 가져오기
 from init_db import db
 from table_model import Reservation
-from utils import extract_price_number, parse_kopis_times
+from utils import parse_kopis_times
 import re # 글자 속에서 원하는 패턴(숫자)을 찾아내는 내는 함수
 
 # 플라스크 블루프린트 설정 (/booking URL 관리)
@@ -62,7 +61,6 @@ def parse_allowed_days(notice_text):
     # [3단계] "X요일 ~ Y요일" 형태의 범위 문구 찾기 (예: "토요일 ~ 일요일", "화 ~ 금")
     # 정규식 설명: 요일 이름 + '요일' 글자(생략가능) + 물결(~) + 요일 이름
     match = re.search(r'([일월화수목금토])요일?\s*~\s*([일월화수목금토])요일?', notice_text)
-
  
     if match:
         # 시작 요일과 끝 요일의 숫자 위치(인덱스)를 알아냅니다.
@@ -81,9 +79,6 @@ def parse_allowed_days(notice_text):
     single_days = re.findall(r'([일월화수목금토])요일?', notice_text)
     for day in single_days:
         allowed.add(day_names.index(day)) # '토'(6), '일'(0)도 빠짐없이 주머니에 담김
-
-     
-    
 
     # [4단계] 문구 속에 '평일'이나 '주말'이라는 단어가 들어있는지 체크합니다.
     if '평일' in notice_text:
@@ -137,10 +132,6 @@ def popup():
         end_date = start_date
 
     allowed_days = parse_allowed_days(dtguidance)
-
-
-        
-
 
     # 3) HTML({{ data.xxx }})로 보낼 상자(data)를 포장합니다!
     popup_data = {

@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, abort, jsonify
 import requests, re
 import xml.etree.ElementTree as ET
-from forms import UserCreateForm
-from flask import render_template, request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from extensions import cache
 
@@ -195,7 +193,6 @@ def performance_detail(perf_id):
 
         # [prfplcDetailRequest] 공연시설 상세 API에서 adres(도로명 주소) 추출
         fclty_id = get_txt('fcltyid')
-        address = ''
         if fclty_id:
             try:
                 f_url = f"http://www.kopis.or.kr/openApi/restful/prfplc/{fclty_id}"
@@ -294,24 +291,7 @@ def performance_detail(perf_id):
         print(f"❌ [상세 API 처리 실패] 공연 ID: {perf_id} | 원인: {e}")
         abort(500, description="공연 상세 정보를 불러오는 도중 오류가 발생했습니다.")
 
-
-# # 3. 회원가입
-# @main_bp.route('/register', methods=['GET'])
-# def register():
-#     form = UserCreateForm() # form 객체를 넘겨주어야 register.html이 정상 렌더링됨
-#     return render_template('auth/register.html', form=form)
-
-# # 4. 로그인
-# @main_bp.route('/login')
-# def login():
-#     return render_template('login.html')
-
-# 5. 예매 내역 (통합 내역 목록 + 티켓 확인증 모달 팝업)
-#@main_bp.route('/mypage/orders')
-#def my_orders():
-#    return render_template('orders.html')
-
-# 6. term n condition 과 policy
+# term n condition 과 policy
 @main_bp.route('/terms')
 def terms():
     return render_template('termsNconditions.html')
