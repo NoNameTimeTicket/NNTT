@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* 공연 제목 */
 .info_name {
     font-size: 1.5rem;
@@ -12,6 +14,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 40px;
     max-width: 100%;
+    margin-bottom: 90px;
 }
 
 .perf-card {
@@ -118,6 +121,29 @@
     padding: 40px 0;
     text-align: center;
     color: #888;
+}
+.search-header{
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #333;
+}
+.search-count{
+    color: #666;
+    font-size: 17px;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.no-search{
+    grid-column: 1 / -1; 
+    text-align: center; 
+    padding: 80px 0; 
+}
+.no-search-mid{
+    font-size: 20px; font-weight: bold; margin-bottom: 10px;
+}
+.no-search-bottom{
+    font-size: 14px; color: #999;
 }
 
 /* 화면 너비가 1024px 이하일 때 (태블릿/모바일 반응형) */

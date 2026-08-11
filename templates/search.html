@@ -1,55 +1,49 @@
-<!-- 박근수 2026-08-05 생성 -->
-
 {% extends 'base.html' %}
 
 {% block title %}'{{ query }}' 검색 결과 - NNTT{% endblock %}
 
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/info.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="search-result-container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
-    
-    <!-- 상단 검색 타이틀 및 건수 안내 -->
-    <div class="search-header" style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #333;">
-        <h2 style="font-size: 24px; margin: 0 0 8px 0;">
-            '<span style="color: #e50914;">{{ query }}</span>' 검색 결과
-        </h2>
-        <p style="color: #666; font-size: 15px; margin: 0;">
-            총 <strong>{{ performances|length }}</strong>건의 공연을 찾았습니다.
-        </p>
+<div class="search-header">
+    <h2 class="info_name">
+        <span style="color: #e50914;">🔍 '{{ query }}'</span> 검색 결과
+    </h2>
+    <p class="search-count">
+        총 <strong>{{ performances|length}}</strong>건의 공연을 찾았습니다.</p>
+</div>
+
+<div class="info">
+    {% if performances %}
+    {% for perf in performances | sort(attribute='prfpdfrom') %}
+    <div class="perf-card">
+        <div class="perf-card-body">
+            <a href="{{ url_for('main.performance_detail', perf_id=perf.mt20id) }}" class="perf-link">
+                {% if perf.poster %}
+                <img src="{{ perf.poster }}" alt="{{ perf.prfnm }}" class="perf-poster" loading="lazy"
+                    onerror="this.src='/static/images/no_image.png'">
+                {% endif %}
+                <div class="perf-text">
+                    <span class="perf-genre">{{ perf.genrenm if perf.genrenm else '공연' }}</span>
+                    <h3 class="perf-title">{{ perf.prfnm }}</h3>
+                    <p class="perf-date">{{ perf.prfpdfrom }} ~ {{ perf.prfpdto }}</p>
+                    <p class="perf-facility">{{ perf.fcltynm }}</p>
+                </div>
+            </a>
+        </div>
+        <a href="{{ url_for('main.performance_detail', perf_id=perf.mt20id) }}" class="perf-btn">
+            상세보기 및 예매
+        </a>
     </div>
-
-    <!-- 공연 카드 리스트 -->
-    <div class="performance-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px;">
-        {% for perf in performances %}
-            <div class="perf-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s;">
-                <a href="{{ url_for('main.performance_detail', perf_id=perf.mt20id) }}" style="text-decoration: none; color: inherit;">
-                    
-                    <div style="width: 100%; height: 300px; overflow: hidden; background-color: #f8f8f8;">
-                        <img src="{{ perf.poster }}" alt="{{ perf.prfnm }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/static/images/no_image.png'">
-                    </div>
-
-                    <div style="padding: 15px;">
-                        <span style="display: inline-block; background-color: #eee; color: #555; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
-                            {{ perf.genrenm if perf.genrenm else '공연' }}
-                        </span>
-                        
-                        <h3 style="font-size: 16px; font-weight: bold; margin: 0 0 8px 0; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                            {{ perf.prfnm }}
-                        </h3>
-
-                        <p style="font-size: 13px; color: #666; margin: 4px 0;">📍 {{ perf.fcltynm }}</p>
-                        <p style="font-size: 12px; color: #888; margin: 4px 0;">📅 {{ perf.prfpdfrom }} ~ {{ perf.prfpdto }}</p>
-                    </div>
-
-                </a>
-            </div>
-        {% else %}
-            <!-- 검색 결과가 없을 때 -->
-            <div style="grid-column: 1 / -1; text-align: center; padding: 80px 0; color: #777;">
-                <p style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">검색 결과가 없습니다.</p>
-                <p style="font-size: 14px; color: #999;">검색어가 정확한지 확인하시거나 다른 공연명으로 다시 검색해 보세요.</p>
-            </div>
-        {% endfor %}
+    {% endfor %}
+    {% else %}
+    <div class="no-search">
+        <p class="no-search-mid">검색 결과가 없습니다.</p>
+        <p class="no-search-bottom">검색어가 정확한지 확인하시거나 다른 공연명으로 다시 검색해 보세요.</p>
     </div>
-
+    {% endif %}
 </div>
 {% endblock %}

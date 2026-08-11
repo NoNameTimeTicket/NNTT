@@ -11,101 +11,101 @@
 </head>
 <body>
 
-<div class="popup-card">
-    <!-- 🎭 상단에 들어가는 공연 제목 (예: 🎭 뮤지컬 캣츠) -->
-    <h2 class="popup-title">🎭 {{ data.title }}</h2>
+    <div class="popup-card">
+        <!-- 🎭 상단에 들어가는 공연 제목 (예: 🎭 뮤지컬 캣츠) -->
+        <h2 class="popup-title">🎭 {{ data.title }}</h2>
 
-    <!-- 📩 가상 결제 완료 버튼을 누르면 booking.pay_process(서버)로 데이터를 보냅니다 -->
-    <form action="{{ url_for('booking.pay_process') }}" method="POST" id="bookingForm">
-        
-        <!-- 🔒 화면에는 안 보이지만 서버로 함께 전달되는 정보들 -->
-        <input type="hidden" name="title" value="{{ data.title }}">
-        <input type="hidden" name="place_name" value="{{ data.place_name }}">
-        <input type="hidden" name="address" value="{{ data.address }}">
-        <input type="hidden" id="unitPrice" name="unitPrice" value="{{ data.unit_price }}">        
-        <input type="hidden" id="ticketCountInput" name="ticket_count" value="1">
+        <!-- 📩 가상 결제 완료 버튼을 누르면 booking.pay_process(서버)로 데이터를 보냅니다 -->
+        <form action="{{ url_for('booking.pay_process') }}" method="POST" id="bookingForm">
+            
+            <!-- 🔒 화면에는 안 보이지만 서버로 함께 전달되는 정보들 -->
+            <input type="hidden" name="title" value="{{ data.title }}">
+            <input type="hidden" name="place_name" value="{{ data.place_name }}">
+            <input type="hidden" name="address" value="{{ data.address }}">
+            <input type="hidden" id="unitPrice" name="unitPrice" value="{{ data.unit_price }}">        
+            <input type="hidden" id="ticketCountInput" name="ticket_count" value="1">
 
-        <div class="popup-body">
-            <!-- 👈 [왼쪽 동네] 달력 표가 그려지는 공간 -->
-            <div class="left-box">
-                <label class="form-label">📆 관람 날짜 선택</label>
-                <!-- 달력에서 클릭한 날짜가 저장되는 상자 -->
-                <input type="hidden" id="datePicker" name="booking_date" value="{{ data.start_date }}" required>
-                <!-- 🌟 자바스크립트(booking.js)가 여기에 큼직한 월력표를 완성해 줍니다 -->
-                <div id="customCalendar"
-                     class="calendar-container"
-                     data-start-date="{{ data.start_date }}"
-                     data-end-date="{{ data.end_date }}"
-                     data-allowed-days="{{ data.allowed_days }}">
-                </div>
-            </div>
-
-            <!-- 👉 [오른쪽 동네] 예약자 정보, 회차 선택, 인원 선택 구역 -->
-            <div class="right-box">
-                <!-- 👤 예약자 ID 및 전화번호 (span.info-value로 글자를 진하고 커지게 만듦) -->
-                <div class="info-item">
-                    <strong>예약자 ID:</strong> <span class="info-value">{{ g.user.username }}</span><br>
-                    <strong>전화번호:</strong> <span class="info-value">{{ data.user_phone }}</span>
-                </div>
-
-                <!-- 📍 공연 장소 정보 -->
-                <div class="info-item">
-                    <strong>공연 장소:</strong> <span class="info-value">{{ data.place_name }}</span>
-                </div>
-
-                <!-- 💵 티켓 한 장 가격 (사전예약가가 있으면 동그라미 선택 버튼 표시, 없으면 그냥 글자 표시) -->
-                <div class="info-item">
-                    <strong>티켓 단가:</strong>
-                    <div class="price-radio-group">
-                        {% for option in data.ticket_options %}
-                          <label class="price-radio-label">
-                            <!-- 첫 번째 항목(loop.first)에 자동으로 checked 설정 -->
-                             <input type="radio" name="price_type" value="{{ option.price }}" {% if loop.first %}checked{% endif %}>
-                             {{ option.label }} ({{ "{:,}".format(option.price) }}원)
-                          </label>
-                        {% endfor %}
+            <div class="popup-body">
+                <!-- 👈 [왼쪽 동네] 달력 표가 그려지는 공간 -->
+                <div class="left-box">
+                    <label class="form-label">📆 관람 날짜 선택</label>
+                    <!-- 달력에서 클릭한 날짜가 저장되는 상자 -->
+                    <input type="hidden" id="datePicker" name="booking_date" value="{{ data.start_date }}" required>
+                    <!-- 🌟 자바스크립트(booking.js)가 여기에 큼직한 월력표를 완성해 줍니다 -->
+                    <div id="customCalendar"
+                        class="calendar-container"
+                        data-start-date="{{ data.start_date }}"
+                        data-end-date="{{ data.end_date }}"
+                        data-allowed-days="{{ data.allowed_days }}">
                     </div>
                 </div>
 
-                <!-- 누락되었던 회차(공연 시간) 선택 구역 -->
-                <div class="info-item">
-                    <label class="form-label" style="margin-bottom: 4px;">⏰ 회차 선택 (공연 시간)</label>
-                    <select name="booking_time" required class="form-control">
-                        {% for time_str in data.available_times %}
-                            <option value="{{ time_str }}">{{ time_str }} 공연</option>
-                        {% else %}
-                            <!-- 공연 시간 정보가 비어있을 때를 대비한 기본값 -->
-                            <option value="19:30">19:30 공연</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                <!-- 👉 [오른쪽 동네] 예약자 정보, 회차 선택, 인원 선택 구역 -->
+                <div class="right-box">
+                    <!-- 👤 예약자 ID 및 전화번호 (span.info-value로 글자를 진하고 커지게 만듦) -->
+                    <div class="info-item">
+                        <strong>예약자 ID:</strong> <span class="info-value">{{ g.user.username }}</span><br>
+                        <strong>전화번호:</strong> <span class="info-value">{{ data.user_phone }}</span>
+                    </div>
 
-                <!-- 👥 인원수 조절 (+ / -) 버튼 -->
-                <div>
-                    <label class="form-label">👥 예약 인원</label>
-                    <div class="counter-wrap">
-                        <button type="button" id="btnMinus" class="btn-count">-</button>
-                        <span id="countNum" class="count-display">1</span>
-                        <button type="button" id="btnPlus" class="btn-count">+</button>
+                    <!-- 📍 공연 장소 정보 -->
+                    <div class="info-item">
+                        <strong>공연 장소:</strong> <span class="info-value">{{ data.place_name }}</span>
+                    </div>
+
+                    <!-- 💵 티켓 한 장 가격 (사전예약가가 있으면 동그라미 선택 버튼 표시, 없으면 그냥 글자 표시) -->
+                    <div class="info-item">
+                        <strong>티켓 단가:</strong>
+                        <div class="price-radio-group">
+                            {% for option in data.ticket_options %}
+                            <label class="price-radio-label">
+                                <!-- 첫 번째 항목(loop.first)에 자동으로 checked 설정 -->
+                                <input type="radio" name="price_type" value="{{ option.price }}" {% if loop.first %}checked{% endif %}>
+                                {{ option.label }} ({{ "{:,}".format(option.price) }}원)
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- 누락되었던 회차(공연 시간) 선택 구역 -->
+                    <div class="info-item">
+                        <label class="form-label" style="margin-bottom: 4px;">⏰ 회차 선택 (공연 시간)</label>
+                        <select name="booking_time" required class="form-control">
+                            {% for time_str in data.available_times %}
+                                <option value="{{ time_str }}">{{ time_str }} 공연</option>
+                            {% else %}
+                                <!-- 공연 시간 정보가 비어있을 때를 대비한 기본값 -->
+                                <option value="19:30">19:30 공연</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- 👥 인원수 조절 (+ / -) 버튼 -->
+                    <div>
+                        <label class="form-label">👥 예약 인원</label>
+                        <div class="counter-wrap">
+                            <button type="button" id="btnMinus" class="btn-count">-</button>
+                            <span id="countNum" class="count-display">1</span>
+                            <button type="button" id="btnPlus" class="btn-count">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 💰 최종 결제 금액 표시 박스 -->
+                    <div class="price-box">
+                        <span>최종 결제 금액:</span>
+                        <span id="totalPriceText">{{ data.unit_price_text }}</span>
                     </div>
                 </div>
-
-                <!-- 💰 최종 결제 금액 표시 박스 -->
-                <div class="price-box">
-                    <span>최종 결제 금액:</span>
-                    <span id="totalPriceText">{{ data.unit_price_text }}</span>
-                </div>
             </div>
-        </div>
 
-        <!-- 🚀 하단 가상 결제 완료 제출 버튼 -->
+            <!-- 🚀 하단 가상 결제 완료 제출 버튼 -->
         <button type="submit" class="btn-pay">
-            가상 결제 완료하기 ➔
-        </button>
-    </form>
-</div>
+                가상 결제 완료하기 ➔
+            </button>
+        </form>
+    </div>
 
-<!-- ⚙️ 작동(달력 그리기, 인원수 계산)을 담당하는 자바스크립트 파일 불러오기 -->
-<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+    <!-- ⚙️ 작동(달력 그리기, 인원수 계산)을 담당하는 자바스크립트 파일 불러오기 -->
+    <script type="module" src="{{ url_for('static', filename='js/booking.js') }}"></script>
 </body>
 </html>
