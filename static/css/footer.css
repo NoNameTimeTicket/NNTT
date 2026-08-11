@@ -1,8 +1,23 @@
+@charset "UTF-8";
+
 /* 기본 설정 */
-* {
+html, body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    height: 100%;
+}
+
+/* 화면 내용량이 적어도 푸터를 바닥에 고정하기 위한 Flexbox 설정 */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 페이지의 메인 컨텐츠 영역(e.g., <main> 또는 #container)이 있다면 
+   해당 요소에 flex: 1을 주어 남은 공간을 채우도록 합니다. */
+main, .container, #content {
+    flex: 1;
 }
 
 ul {
@@ -22,7 +37,7 @@ a {
     margin-top: auto;
     background-color: #d9d8d8;
     color: #222;
-    border-top: 1px solid #6c8e9060 ;
+    border-top: 1px solid #6c8e9060;
 }
 
 

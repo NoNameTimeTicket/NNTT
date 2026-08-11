@@ -1,4 +1,5 @@
-/* 전체 화면 중앙 정렬 및 상단 헤더 (.orders-box, .orders-top)
+@charset "UTF-8";
+
 /* 예매 내역 전체를 감싸는 제일 큰 상자 */
 .orders-box {
   max-width: 800px;

@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +8,7 @@
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #ffffff;
+    background-color: #fcfbf5;
     color: #333;
 }
 
@@ -15,7 +17,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fabdaf;
+    background-color: #dcedeb;
     color: #fff;
     height: 100px;
     width: 100%;
@@ -96,13 +98,20 @@ body {
 .nav-right {
     display: flex;
     align-items: center; 
-    
+    margin-right: 12px;
+}
+
+.user_id {    
+    color: #1A3A3A;
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 20px;
+    gap: 10px;
     padding: 0;
     margin: 0;
 
@@ -110,14 +119,14 @@ body {
 
 .nav-links a {
     display: flex;
-    color: #2f6163;
+    color: #156669;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 550;
     text-decoration: none;
 }
 
 .nav-links a:hover {
-    color: #7492f6;
+    color: #5374df;
 }
 
 .container {

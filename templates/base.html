@@ -38,7 +38,7 @@
         	<div class="nav-right">
            		 <ul class="nav-links">
                 	{% if g.user %}
-                	<li><span>{{ g.user.username }}님</span></li>
+                	<li><span class="user_id">🎟️{{ g.user.username }}님</span></li>
                 	<li><a href="{{ url_for('auth.update_profile') }}">정보변경</a></li>
                 	<div class="divider-line_top"></div>
                 	<li><a href="{{ url_for('booking.my_orders') }}">내 예매 내역</a></li>
