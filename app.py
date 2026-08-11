@@ -6,6 +6,7 @@ from views import auth_views, booking
 from views.support import notice_views, faq_views
 from filter.filter_date import format_datetime
 from extensions import cache  # cache 가져오기
+port_number = 8080
 
 def create_app():
     app = Flask(__name__)
@@ -33,4 +34,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     # py app.py 실행 코드
-    app.run(debug=True)
+    app.run(debug=True, port=port_number)
