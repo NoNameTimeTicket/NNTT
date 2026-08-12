@@ -214,7 +214,7 @@ def pay_process():
         payload_to_server = {
             "user_id": g.user.username,
             "price": total_price,
-            "reservation_date" : datetime.now()
+            "reservation_date" : datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
         response = requests.post(PAYMENT_SERVER_URL, json=payload_to_server, timeout=5)
