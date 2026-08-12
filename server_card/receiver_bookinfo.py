@@ -63,6 +63,7 @@ async def process_payment(payment_data: PaymentRequest):
         gui_app_ref.add_payment_record(
             user_id=payment_data.user_id,
             price=payment_data.price,
+            reservation_date=payment_data.reservation_date,
             approval_code=approval_code
         )
         success_msg = f" └─> 승인 완료 | 승인번호: {approval_code}"
@@ -183,11 +184,12 @@ class PaymentReceiverGUI:
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-    def add_payment_record(self, user_id: str, price: int, approval_code: str):
+    def add_payment_record(self, user_id: str, price: int, reservation_date: str, approval_code: str):
         """승인된 결제 정보를 메모리 리스트에 수집"""
         self.payment_records.append({
             "유저": user_id,
             "금액": price,
+            "승인시각": reservation_date,
             "승인번호": approval_code
         })
 
@@ -248,7 +250,7 @@ class PaymentReceiverGUI:
 
             # 4. 파일 저장
             with open(full_path, mode="w", newline="", encoding="utf-8-sig") as f:
-                fieldnames = ["유저", "금액", "승인번호"]
+                fieldnames = ["유저", "금액", "승인시간", "승인번호"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(self.payment_records)
@@ -279,7 +281,7 @@ class PaymentReceiverGUI:
         if file_path:
             try:
                 with open(file_path, mode="w", newline="", encoding="utf-8-sig") as f:
-                    fieldnames = ["유저", "금액", "승인번호"]
+                    fieldnames = ["유저", "금액", "승인시각", "승인번호"]
                     writer = csv.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()
                     writer.writerows(self.payment_records)
