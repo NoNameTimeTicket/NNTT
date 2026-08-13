@@ -217,7 +217,6 @@ class PaymentReceiverGUI:
         """선택한 시간(ms) 이후에 auto_save_csv 함수를 호출하도록 예약"""
         if self.auto_save_hours > 0:
             interval_ms = self.auto_save_hours * 3600 * 1000  # 시간 -> 밀리초 변환
-            #interval_ms = self.auto_save_hours * 20 * 1000
             self.auto_save_timer_id = self.root.after(interval_ms, self.auto_save_csv)
 
     def auto_save_csv(self):
@@ -250,7 +249,7 @@ class PaymentReceiverGUI:
 
             # 4. 파일 저장
             with open(full_path, mode="w", newline="", encoding="utf-8-sig") as f:
-                fieldnames = ["유저", "금액", "승인시간", "승인번호"]
+                fieldnames = ["유저", "금액", "승인시각", "승인번호"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(self.payment_records)
