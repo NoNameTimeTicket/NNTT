@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sup_detail.css') }}">
+
 <div class="container my-3">
-    {# 클릭한 faq 제목/내용 조회 #}
-    <h2 class="border-bottom py-2">{{ faq.subject }}</h2>
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;">{{ faq.content }}</div>
+            {# 클릭한 faq 제목/내용 조회 #}
+            <h2 class="border-bottom py-2">{{ faq.subject }}</h2>
 
+            {# 게시물 내용 #}
+            <div class="card-text">{{ faq.content }}</div>
+
+            {# 작성자 정보 뱃지 #}
             <div class="d-flex justify-content-end">
-                <div class="badge bg-light text-dark p-2 text-start">
-                    <div class="mb-2">{{ faq.user.username }}</div>
-                    <div class="mb-2">asked at</div>
-                    <div>{{ faq.create_date|datetime }}</div>
+                <div class="badge bg-light p-2 text-start">
+                    <div class="mb-1">
+                        <span class="author-label">작성자 :</span>
+                        <span class="author-value">{{ faq.user.username }}</span>
+                    </div>
+                    <div>
+                        <span class="author-label">작성일 :</span>
+                        <span class="author-value">{{ faq.create_date|datetime }}</span>
+                    </div>
                 </div>
             </div>
+
+            {# 수정/삭제 버튼 #}
             <div class="my-3">
                 {% if g.user.username == 'admin' %} {# 수정/삭제 기능 추가 글쓴이와 현재유저 or admin 동일 여부 확인 #}
-                    <a href="{{ url_for('faq.modify', faq_id=faq.id) }}"
-                            class="btn btn-sm btn-outline-secondary">수정</a>                    
-                    <a href="javascript:void(0)" data-uri="{{ url_for('faq.delete', faq_id=faq.id) }}"
-                        class="delete_notice btn btn-sm btn-outline-secondary">삭제</a>
+                <a href="{{ url_for('faq.modify', faq_id=faq.id) }}" class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="javascript:void(0)" data-uri="{{ url_for('faq.delete', faq_id=faq.id) }}"
+                    class="delete_notice btn btn-sm btn-outline-secondary">삭제</a>
                 {% endif %}
             </div>
         </div>

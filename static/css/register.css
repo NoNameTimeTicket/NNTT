@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+.signup-title {
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+/* 회원가입 폼 컨테이너 */
+.signup-form {
+    max-width: 400px;
+    margin-top: 20px;
+}
+
+/* 플래시 에러 메시지 */
+.flash-message {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+/* 입력 그룹 (라벨 + 인풋) */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* 입력 폼 라벨 */
+.form-label {
+    display: block; 
+    padding: 0;      
+    margin-top: 0;
+    font-size: 17px;          
+    font-weight: bold;
+    background: transparent;
+}
+
+/* 입력 폼 필드 */
+.form-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    height: 40px;
+    margin-bottom: 15px;    
+}
+
+/* 인풋 창 클릭(포커스) 시 과도한 파란 테두리 제거 및 슬림화 */
+.form-input:focus {    
+    box-shadow: 0 0 0 2.5px rgba(0, 123, 255, 0.25);
+    }
+
+/* 가입하기 버튼 */
+.btn-register {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.btn-register:hover {
+    background-color: #555;
+}

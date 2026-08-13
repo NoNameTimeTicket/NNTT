@@ -1,0 +1,107 @@
+.container {
+    max-width: 1100px;
+}
+
+/* 제목 스타일링 */
+h2,
+h5 {
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 20px;
+}
+
+h2.border-bottom {
+    padding-bottom: 24px !important;
+}
+
+
+/* 상세보기 카드 커스텀 */
+.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-text {
+    white-space: pre-line;
+    font-size: 1.025rem;
+    line-height: 1.7;
+    color: #334155;
+    min-height: 120px;
+}
+
+/* 작성자 정보 뱃지 */
+.card-body .badge.bg-light {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 14px !important;
+    font-size: 14px;
+    color: #272d36;
+    font-weight: 500;
+    line-height: 1.4;
+    background-color: #e9f2fc !important;
+    margin-top: 25px;
+}
+
+.card-body .badge.bg-light .mb-1 {
+    color: #202936;
+    font-weight: bold;
+}
+
+.card-body .badge.bg-light .author-label {
+    color: #3c4553;
+    /* 차분한 회색 */
+    font-weight: 500;
+    margin-right: 3px;
+    /* 라벨과 값 사이 간격 */
+}
+
+.card-body .badge.bg-light .author-value {
+    font-weight: 600;
+    /* 값 강조 */
+}
+
+/* 버튼 스타일 */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 18px;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+.btn-outline-secondary {
+    color: #64748b;
+    border-color: #cbd5e1;
+    background-color: #ffffff;
+}
+
+/* 반응형 레이아웃 (1024px 이하 모바일/패드) */
+@media (max-width: 1024px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    h2 {
+        font-weight: bold;
+        color: #1e293b;
+        margin-bottom: 20px;
+
+        /* 화면 크기에 맞춰 반응형으로 폰트 크기 조절 (최소 1.2rem ~ 최대 1.75rem) */
+        font-size: clamp(1.2rem, 2.5vw, 2rem);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+}

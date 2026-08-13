@@ -44,18 +44,18 @@
                 <div class="right-box">
                     <!-- 👤 예약자 ID 및 전화번호 (span.info-value로 글자를 진하고 커지게 만듦) -->
                     <div class="info-item">
-                        <strong>예약자 ID:</strong> <span class="info-value">{{ g.user.username }}</span><br>
-                        <strong>전화번호:</strong> <span class="info-value">{{ data.user_phone }}</span>
+                        <strong>예약자 ID :</strong> <span class="info-value">{{ g.user.username }}</span><br>
+                        <strong>전화번호 :</strong> <span class="info-value">{{ data.user_phone }}</span>
                     </div>
 
                     <!-- 📍 공연 장소 정보 -->
                     <div class="info-item">
-                        <strong>공연 장소:</strong> <span class="info-value">{{ data.place_name }}</span>
+                        <strong>공연 장소 :</strong> <span class="info-value">{{ data.place_name }}</span>
                     </div>
 
                     <!-- 💵 티켓 한 장 가격 (사전예약가가 있으면 동그라미 선택 버튼 표시, 없으면 그냥 글자 표시) -->
                     <div class="info-item">
-                        <strong>티켓 단가:</strong>
+                        <strong>티켓 단가 :</strong>
                         <div class="price-radio-group">
                             {% for option in data.ticket_options %}
                             <label class="price-radio-label">

@@ -1,71 +1,71 @@
 {% extends 'base.html' %}
 
+{% block title %}회원 정보 변경 - NNTT{% endblock %}
+
 {% block content %}
-    <h2>회원 정보 변경</h2>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fix_profile.css') }}">
 
-    <!-- 에러 및 안내 메시지 출력 -->
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div style="max-width: 400px; margin-bottom: 15px; color: #d9534f;">
-                {% for message in messages %}
-                    <p style="margin: 5px 0;">{{ message }}</p>
-                {% endfor %}
-            </div>
+<h2 class="form-title">회원 정보 변경</h2>
+
+<!-- 에러 및 안내 메시지 출력 -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<form method="POST" class="auth-form">
+    {# CSRF 토큰 (Flask-WTF 사용 시) #}
+    {% if form and form.csrf_token %}
+        {{ form.csrf_token }}
+    {% endif %}
+
+    <!-- 아이디 (수정 불가) -->
+    <div class="form-group">
+        <label for="username" class="form-label">아이디</label>
+        {% if form and form.username %}
+            {{ form.username(class="form-control form-input disabled", disabled=True) }}
+        {% else %}
+            <input type="text" id="username" value="{{ g.user.username }}" class="form-control form-input disabled" disabled>
         {% endif %}
-    {% endwith %}
+    </div>
 
-    <form method="POST" style="max-width: 400px; margin-top: 20px;">
-        {# CSRF 토큰 (Flask-WTF 사용 시) #}
-        {% if form and form.csrf_token %}
-            {{ form.csrf_token }}
+    <!-- 이메일 -->
+    <div class="form-group">
+        <label for="email" class="form-label">이메일</label>
+        {% if form and form.email %}
+            {{ form.email(class="form-control form-input") }}
+        {% else %}
+            <input type="email" id="email" name="email" value="{{ g.user.email }}" class="form-control form-input" required>
         {% endif %}
+    </div>
 
-        {# 공통 인라인 스타일 변수 #}
-        {% set input_style = "width: 100%; padding: 8px; box-sizing: border-box;" %}
-        {% set disabled_style = "width: 100%; padding: 8px; box-sizing: border-box; background-color: #f0f0f0; cursor: not-allowed;" %}
+    <!-- 전화번호 -->
+    <div class="form-group">
+        <label for="phone" class="form-label">전화번호</label>
+        {% if form and form.phone %}
+            {{ form.phone(class="form-control form-input") }}
+        {% else %}
+            <input type="text" id="phone" name="phone" value="{{ g.user.phone }}" class="form-control form-input" required>
+        {% endif %}
+    </div>
 
-        <!-- 아이디 (수정 불가) -->
-        <div style="margin-bottom: 15px;">
-            <label for="username" style="display: block; margin-bottom: 5px;">아이디</label>
-            {% if form and form.username %}
-                {{ form.username(class="form-control", style=disabled_style, disabled=True) }}
-            {% else %}
-                <input type="text" id="username" value="{{ g.user.username }}" style="{{ disabled_style }}" disabled>
-            {% endif %}
-        </div>
+    <!-- 주소 -->
+    <div class="form-group">
+        <label for="address" class="form-label">주소</label>
+        {% if form and form.address %}
+            {{ form.address(class="form-control form-input") }}
+        {% else %}
+            <input type="text" id="address" name="address" value="{{ g.user.address or '' }}" class="form-control form-input">
+        {% endif %}
+    </div>
 
-        <!-- 이메일 -->
-        <div style="margin-bottom: 15px;">
-            <label for="email" style="display: block; margin-bottom: 5px;">이메일</label>
-            {% if form and form.email %}
-                {{ form.email(class="form-control", style=input_style) }}
-            {% else %}
-                <input type="email" id="email" name="email" value="{{ g.user.email }}" style="{{ input_style }}" required>
-            {% endif %}
-        </div>
-
-        <!-- 전화번호 -->
-        <div style="margin-bottom: 15px;">
-            <label for="phone" style="display: block; margin-bottom: 5px;">전화번호</label>
-            {% if form and form.phone %}
-                {{ form.phone(class="form-control", style=input_style) }}
-            {% else %}
-                <input type="text" id="phone" name="phone" value="{{ g.user.phone }}" style="{{ input_style }}" required>
-            {% endif %}
-        </div>
-
-        <!-- 주소 -->
-        <div style="margin-bottom: 15px;">
-            <label for="address" style="display: block; margin-bottom: 5px;">주소</label>
-            {% if form and form.address %}
-                {{ form.address(class="form-control", style=input_style) }}
-            {% else %}
-                <input type="text" id="address" name="address" value="{{ g.user.address or '' }}" style="{{ input_style }}">
-            {% endif %}
-        </div>
-
-        <button type="submit" style="width: 100%; padding: 10px; background-color: #333; color: white; border: none; cursor: pointer;">
-            수정 완료
-        </button>
-    </form>
+    <button type="submit" class="btn-submit">
+        수정 완료
+    </button>
+</form>
 {% endblock %}

@@ -1,0 +1,238 @@
+.container {
+    max-width: 1100px;
+}
+
+/* 제목 스타일링 */
+h2,
+h5 {
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.02em;
+}
+
+h2.border-bottom,
+h5.border-bottom {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+/* 상세보기 카드 커스텀 */
+.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-text {
+    white-space: pre-line;
+    font-size: 1.025rem;
+    line-height: 1.7;
+    color: #334155;
+    min-height: 120px;
+}
+
+/* 작성자 정보 뱃지 */
+.card-body .badge.bg-light {
+    color: #2563eb;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* 버튼 및 폼 컨트롤 */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 18px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-outline-secondary {
+    color: #64748b;
+    border-color: #cbd5e1;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    margin: 0 20px 0 70px !important;
+    width: 350px !important;
+    white-space: nowrap;
+}
+
+.form-control:focus {
+    border-color: #3b82f6;
+}
+
+/* 목록 테이블 */
+.table {
+    width: 1050px;
+    max-width: 100%;
+    margin: 1rem auto 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.table thead tr.table-dark {
+    --bs-table-bg: #1e293b;
+    color: #ffffff;
+}
+
+.table th,
+.table td {
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.table th {
+    font-weight: 600;
+    border-bottom: none;
+}
+
+.table th.col-title {
+    width: 50%;
+}
+
+.table td {
+    vertical-align: middle;
+    border-bottom: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.table td.col-title,
+.table td a {
+    white-space: normal;
+}
+
+.table td a {
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.table td a:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 페이지네이션 커스텀 */
+.pagination {
+    margin-top: 2rem;
+    gap: 4px;
+}
+
+.pagination .page-item .page-link {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 500;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+    margin: 5px;
+    white-space: nowrap;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f1f5f9;
+    color: #2563eb;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #cbd5e1;
+}
+
+/* 반응형 레이아웃 (1024px 이하) */
+@media (max-width: 1024px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .row.my-3 {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .row.my-3 > [class*="col-"],
+    .input-group,
+    #searchForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .input-group {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    #searchForm {
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    #searchForm .form-control {
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 320px !important;
+    }
+
+    .table {
+        display: table !important;
+        width: 100% !important;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+}

@@ -2,115 +2,180 @@
 
 /* 예매 내역 전체를 감싸는 제일 큰 상자 */
 .orders-box {
-  max-width: 800px;
+  width: 1000px;
   margin: 30px auto;
-  padding: 20px;
+  padding: 20px 40px;
+  background-color: #fff;
+  border: 1px solid #6c8e9042;
+  border-radius: 15px;
+  box-sizing: border-box;
 }
-/* 상단 제목(📋 내 예매 내역)과 드롭다운 상자를 나란히 만드는 구역 */
-.order-top {
+
+/* 📋 내 예매 내역과 드롭다운 상자를 나란히 만드는 구역 */
+.orders-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #222;
+  border-bottom: 2px solid #6c8e9070;
+}
+
+/* 월별 보기 필터 감싸는 박스 */
+.filter-box {
+  margin: 30px 0;
+}
+
+.month-check {
+  font-size: 20px;
+  font-weight: 550;
+  margin-right: 10px;
 }
 
 /* 월별 선택 드롭다운 상자 */
 .month-select {
-  padding: 6px 10px;
-  border-radius: 4px;
+  padding: 3px 7px;
+  border-radius: 5px;
   border: 1px solid #ccc;
   cursor: pointer;
+  font-size: 15px;
+  height: 38px;
+  width: 130px;
 }
 
-/* 개별 예매 카드 박스 (.order-list, .order-card)
+
+/* 2. 예매 목록 & 카드 컨테이너 (.order-list, .card-card) */
 /* 카드들을 세로로 차곡차곡 쌓아주는 세로 줄짓기 틀 */
 .order-list {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
-  gap: 15px;
+  gap: 30px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* 예매가 없을 때 표시되는 박스 */
+.empty-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  border-radius: 8px;
+  color: #64748b;
+  height: 300px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 예매 1건을 나타내는 흰색 카드 박스 */
-.order-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+.card-card {
+  background: #fff8ef;
+  border: 1px solid #a8a8a8;
   border-radius: 8px;
-  padding: 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  padding: 22px;
+  padding-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 750px;
+  min-height: 250px;
+  height: auto;
+  box-sizing: border-box;
 }
-/* 💡 취소된 예매 카드는 구분을 위해 살짝 어둡고 흐리게 변경! */
-.order-card.canceled {
-  background: #f8fafc;
+
+/* 💡 취소된 예매 카드는 구분을 위해 살짝 어둡고 흐리게 변경 */
+.card-card.canceled {
+  background: #fffcfc;
   opacity: 0.75;
 }
 
-/*카드 내부 레이아웃 (.card-header, .card-body, .card-footer)
+
+/* 3. 카드 내부 구조 (.card-header, .card-body, .card-footer) */
 /* 카드 맨 위 (예매번호 #1 + 상태 배지) */
-.cord-header {
+.card-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 1px solid #f1f5f9;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #d8d8d8;
+  padding-bottom: 12px;
 }
 
 .order-id {
   font-weight: bold;
-  color: #475569;
+  color: #2e3e55;
 }
 
 /* 카드 중간 (공연 정보, 관람 일시) */
-.cord-body {
+.card-body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-height: 70px;  
+  margin-bottom: 12px;
 }
 
 .info-row {
   display: flex;
   align-items: center;
+  line-height: 1.4;
+  width: 100%;
+  font-size: 15px;  
+  min-width: 0;  
 }
 
 .label {
-  width: 90px;
-  color: #64748b;
-  font-size: 14px;
+  width: 70px;
+  flex-shrink: 0;
+  color: #262c34;
+  font-weight: 560;
 }
 
-.val {
-  color: #1e293b;
-  font-size: 15px;
+.val {  
+  color: #138f36; 
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .bold {
+  color: #27303b;
   font-weight: bold;
+  font-size: 19px;
 }
 
 /* 카드 맨 아래 (버튼들이 모여있는 곳) */
 .card-footer {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 8px;
-  margin-top: 10px;
-  border-top: 1px solid #f1f5f9;
+  margin: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #d8d8d8;
 }
 
-/* 버튼 및 예매 상태 배지 (.btn-*, .badge-*)
+
+/* 4. 카드 내 버튼 및 배지 스타일 (.btn-*, .badge-*) */
 /* 네이버지도 초록색 미니 버튼 */
-.btn-map {
-  margin-left: 8px;
+.btn-map {    
+  margin-bottom: 7px;
   padding: 2px 8px;
   font-size: 12px;
-  background: #f0fdf4;
+  background: #e8ffef;
   color: #16a34a;
-  border: 1px solid #bbf7d0;
+  border: 1px solid #86ce9f;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
 }
 
-/* 마우스를 올렸을 때(hover) 색상이 반전되어 확 눈에 띔! */
 .btn-map:hover {
   background: #16a34a;
   color: #fff;
@@ -119,11 +184,16 @@
 /* 🎫 티켓 확인증 검은색 버튼 */
 .btn-ticket {
   padding: 6px 12px;
-  background: #334155;
+  background: #4c617f;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 550;
+}
+
+.btn-ticket:hover {
+  background: #334155;
 }
 
 /* ❌ 예매 취소 빨간색 버튼 */
@@ -134,44 +204,77 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 550;
+}
+
+.btn-cancel:hover {
+  background: #cc2c2c;
 }
 
 .inline-form {
-  display: inline; /* 취소 버튼 form 태그가 줄바꿈되지 않고 옆에 붙게 함 */
+  display: inline;
+  /* 취소 버튼 form 태그가 줄바꿈되지 않고 옆에 붙게 함 */
 }
 
 /* 🏷️ 예매 상태 동그라미 배지 공통 */
 .badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 3px 8px;
   font-size: 12px;
   font-weight: bold;
   border-radius: 10px;
 }
 
-.badge-active { background: #dcfce7; color: #15803d; } /* 초록색 예매완료 알약 */
-.badge-canceled { background: #fee2e2; color: #b91c1c; } /* 빨간색 취소완료 알약 */
+.badge-active {
+  background: #d3fae1;
+  color: #15803d;
+}
 
-.canceled-text { color: #94a3b8; font-size: 13px; }
-.empty-box { text-align: center; padding: 40px; background: #fff; border-radius: 8px; color: #64748b;}
+/* 초록색 예매완료 알약 */
 
-/* 티켓 확인증 모달 팝업창 (.modal-*)
+.badge-canceled {
+  background: #fedddd;
+  color: #b91c1c;
+}
+
+/* 빨간색 취소완료 알약 */
+
+.canceled-text {
+  margin-top: 5px;
+  margin-right: 5px;
+  color: #667181;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+/* 5. 티켓 확인증 모달 팝업창 (.modal-*) */
 /* 모달이 켜질 때 화면 전체를 어둡게 덮는 반투명 검은 막 */
 .modal-bg {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* 다른 어떤 요소보다 가장 위로 올라오게 세팅! */
+  z-index: 1000;
+  /* 다른 어떤 요소보다 가장 위로 올라오게 세팅 */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* 모달 팝업 상자 본체 */
 .modal-card {
   background: #fff;
+  width: 100%;
   width: 380px;
-  border-radius: hidden;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 /* 팝업 상단 검은 헤더 바 */
@@ -184,6 +287,11 @@
   align-items: center;
 }
 
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
 .btn-close-x {
   background: none;
   border: none;
@@ -192,6 +300,7 @@
   cursor: pointer;
 }
 
+/* 팝업 본문 영역 */
 .modal-body {
   padding: 16px;
 }
@@ -199,7 +308,8 @@
 /* 모달 안쪽 티켓 영수증 디자인 박스 */
 .receipt-box {
   background: #f8fafc;
-  border: 1px dashed #cbd5e1 ; /* 영수증 느낌 나도록 '점선(dashed)' 테두리를 줌 */
+  border: 1px dashed #cbd5e1;
+  /* 영수증 느낌 나도록 '점선(dashed)' 테두리를 줌 */
   padding: 12px;
   border-radius: 6px;
   font-size: 14px;
@@ -215,24 +325,94 @@
   background: #f1f5f9;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .btn-naver {
-  padding: 6px 12px;
+  padding: 6px 14px;
+  padding-left: 4px;
   background: #16a34a;
   color: #fff;
   border: none;
   border-radius: 4px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
+  height: 40px;
+  flex: 1;
+  max-width: 170px;
+}
+
+.btn-naver:hover {
+  background: #107234;
 }
 
 .btn-close {
-  padding: 6px 12px;
-  background: #64748b;
-  height: 20px; width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 14px;
+  background: #4b5869;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  height: 30px;
+  width: 30px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-close:hover {
+  background: #2e3640;
+  color: #fff;
+}
+
+@media (max-width: 1024px) {
+  .orders-box {
+    width: 100%;
+    max-width: 100%;
+    margin: 10px auto;
+    padding: 16px;
+    /* 패딩 축소 */
+    box-sizing: border-box;
+  }
+
+  .orders-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .order-list {
+    width: 100%;
+    padding: 0;
+    gap: 16px;
+    /* 카드 간격 축소 */
+  }
+
+  .card-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+    min-height: auto;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .label {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  .btn-map {
+    margin-left: 0;
+    margin-top: 4px;
+    display: inline-block;
+  }
 }

@@ -10,13 +10,13 @@
     <div class="orders-top">
         <h2>📋 내 예매 내역</h2>
         <div class="filter-box">
-            <label for="monthFilter">월별보기</label>
+            <label for="monthFilter" class="month-check">월별보기</label>
             <select id="monthFilter" class="month-select" onchange="filterByMonth(this.value)">
                 <option value="" {% if not selected_month %}selected{% endif %}>전체 보기</option>
                 {% for month in available_months %}
-                    <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>
-                        {{ month[:4] }}년 {{ month[5:] }}월
-                    </option>
+                <option value="{{ month }}" {% if selected_month==month %}selected{% endif %}>
+                    {{ month[:4] }}년 {{ month[5:] }}월
+                </option>
                 {% endfor %}
             </select>
         </div>
@@ -25,70 +25,70 @@
     <!-- 카드 형태 예매 목록 -->
     <div class="order-list">
         {% if orders %}
-            {% for order in orders %}
-                <div class="card-card {% if order.is_canceled %}canceled{% endif %}">
-                    <!-- 카드 헤더: 예매번호 및 상태 -->
-                    <div class="card-header">
-                        <span class="order-id">예매번호 #{{ order.id }}</span>
-                        {% if order.is_canceled %}
-                            <span class="badge badge-canceled">취소완료</span>
-                        {% else %}
-                            <span class="badge badge-active">예매완료</span>
-                        {% endif %}
-                    </div>
+        {% for order in orders %}
+        <div class="card-card {% if order.is_canceled %}canceled{% endif %}">
+            <!-- 카드 헤더: 예매번호 및 상태 -->
+            <div class="card-header">
+                <span class="order-id">예매번호 #{{ order.id }}</span>
+                {% if order.is_canceled %}
+                <span class="badge badge-canceled">취소완료</span>
+                {% else %}
+                <span class="badge badge-active">예매완료</span>
+                {% endif %}
+            </div>
 
-                    <!-- 카드 본문: 공연정보 및 일시 -->
-                    <div class="card-body">
-                        <div class="info-row">
-                            <span class="label">공연정보</span>
-                            <span class="val bold">{{ order.title }}</span>
-                            <button type="button" class="btn-map" onclick="openNaverMap('{{ order.place }}')">
-                                📍 네이버지도
-                            </button>
-                        </div>
-                        <div class="info-row">
-                            <span class="label">관람일시</span>
-                            <span class="val">
-                                {% if order.real_play_date %}
-                                    {{ order.real_play_date.strftime('%Y-%m-%d %H:%M') }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- 카드 하단 버튼 구역 -->
-                    <div class="card-footer">
-                        {% if not order.is_canceled %}
-                            <!-- data-* 속성에 티켓 데이터를 보관합니다 -->
-                            <button type="button" class="btn-ticket"
-                                    data-id="{{ order.id }}"
-                                    data-title="{{ order.title }}"
-                                    data-place="{{ order.place }}"
-                                    data-date="{{ order.real_play_date.strftime('%Y-%m-%d %H:%M') }}"
-                                    data-created="{{ order.reservation_date.strftime('%Y-%m-%d %H:%M') }}"
-                                    data-address="{{ order.address }}"
-                                    onclick="openTicketModal(this)">
-                                🎫 확인증
-                            </button>
-
-                            <form action="{{ url_for('booking.cancel_order', order_id=order.id) }}" method="POST" class="inline-form" onsubmit="return confirmCancel();">
-                                <button type="submit" class="btn-cancel">예매 취소</button>                    
-                            </form>
-                        {% else %}
-                            <span class="canceled-text">취소된 예매 건입니다.</span>
-                        {% endif %}
-                    </div>
+            <!-- 카드 본문: 공연정보 및 일시 -->
+            <div class="card-body">
+                <div class="info-row">
+                    <span class="label">공연정보</span>
+                    <span class="val bold">{{ order.title }}</span>
                 </div>
-            {% endfor %}
+                <div class="info-row">
+                    <button type="button" class="btn-map" onclick="openNaverMap('{{ order.place }}')">
+                        📍 네이버지도
+                    </button>
+                </div>
+
+                <div class="info-row">
+                    <span class="label">관람일시</span>
+                    <span class="val">
+                        {% if order.real_play_date %}
+                        {{ order.real_play_date.strftime('%Y-%m-%d %H:%M') }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- 카드 하단 버튼 구역 -->
+            <div class="card-footer">
+                {% if not order.is_canceled %}
+                <!-- data-* 속성에 티켓 데이터를 보관합니다 -->
+                <button type="button" class="btn-ticket" data-id="{{ order.id }}" data-title="{{ order.title }}"
+                    data-place="{{ order.place }}" data-date="{{ order.real_play_date.strftime('%Y-%m-%d %H:%M') }}"
+                    data-created="{{ order.reservation_date.strftime('%Y-%m-%d %H:%M') }}"
+                    data-address="{{ order.address }}" onclick="openTicketModal(this)">
+                    🎫 확인증
+                </button>
+
+                <form action="{{ url_for('booking.cancel_order', order_id=order.id) }}" method="POST"
+                    class="inline-form" onsubmit="return confirmCancel();">
+                    <button type="submit" class="btn-cancel">예매 취소</button>
+                </form>
+                {% else %}
+                <span class="canceled-text">취소된 예매 건입니다.</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
         {% else %}
-            <div class="empty-box">예매하신 공연 내역이 없습니다.</div>
-        {% endif %}       
+        <div class="empty-box">예매하신 공연 내역이 없습니다.</div>
+        {% endif %}
     </div>
 </div>
 
-<!-- 🎟️ 티켓 확인증 모달 팝업창 (ticktetModal -> ticketModal 수정) -->
+<!-- 🎟️ 티켓 확인증 모달 팝업창-->
 <div id="ticketModal" class="modal-bg" style="display: none;">
     <div class="modal-card">
         <div class="modal-header">
