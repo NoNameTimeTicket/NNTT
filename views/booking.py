@@ -13,7 +13,7 @@ import re # 글자 속에서 원하는 패턴(숫자)을 찾아내는 내는 함
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
 
 # 카드 결제를 역할 서버 주소
-PAYMENT_SERVER_URL = "http://127.0.0.1:8000/api/v1/payment"
+PAYMENT_SERVER_URL = "http://host.docker.internal:8000/api/v1/payment"
 
 # =========================================================
 #  새로 추가하는 코드

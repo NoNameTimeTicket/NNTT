@@ -34,4 +34,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     # py app.py 실행 코드
-    app.run(debug=True, port=port_number)
+    app.run(host='0.0.0.0', debug=True, port=port_number)
