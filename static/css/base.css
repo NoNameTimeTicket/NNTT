@@ -19,7 +19,7 @@ body {
     justify-content: center;
     background-color: #dcedeb;
     color: #fff;
-    height: 100px;
+    height: 90px;
     width: 100%;
     border-bottom: 1px solid #6c8e9042;    
 
@@ -98,7 +98,7 @@ body {
 .nav-right {
     display: flex;
     align-items: center; 
-    margin-right: 12px;
+    margin-right: 12px;    
 }
 
 .user_id {    
@@ -120,8 +120,8 @@ body {
 .nav-links a {
     display: flex;
     color: #156669;
-    font-size: 16px;
-    font-weight: 550;
+    font-size: 16px;    
+    font-weight: bold;
     text-decoration: none;
 }
 

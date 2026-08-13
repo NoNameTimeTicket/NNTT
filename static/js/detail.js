@@ -18,19 +18,37 @@ document.addEventListener('DOMContentLoaded', function () {
         const startDate = encodeURIComponent(btnOpen.dataset.startDate || '');
         const endDate = encodeURIComponent(btnOpen.dataset.endDate || '');
 
-        
+
         // 정보들을 가지고 갈 팝업창 주소를 만듭니다.
         const popupUrl = `/booking/popup`
-        + `?performance_id=${perfId}`
-        + `&title=${title}`
-        + `&place_name=${place}`
-        + `&address=${address}`
-        + `&ticket_price=${price}`
-        + `&time_notice=${timeNotice}`
-        + `&start_date=${startDate}`
-        + `&end_date=${endDate}`;
+            + `?performance_id=${perfId}`
+            + `&title=${title}`
+            + `&place_name=${place}`
+            + `&address=${address}`
+            + `&ticket_price=${price}`
+            + `&time_notice=${timeNotice}`
+            + `&start_date=${startDate}`
+            + `&end_date=${endDate}`;
 
-        // width를 780px로 140px 더 넓혀서 달력이 들어갈 공간을 확보했습니다.
-        window.open(popupUrl, 'BookingPopup', 'width=780,height=620,scrollbars=yes,resizable=no');
+        const popupWidth = 900;
+        const popupHeight = 780;
+
+        // 현재 브라우저 창의 모니터 상 위치 구하기
+        // 브라우저 호환성을 위해 window.screen을 모두 확인
+        const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+        const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+
+        const left = dualScreenLeft + (innerWidth - popupWidth) / 3;
+        const top = dualScreenTop + (innerHeight - popupHeight) / 3;
+
+        const popup = window.open(
+            popupUrl,
+            'BookingPopup', // 팝업창의 식별 이름
+            `width=${popupWidth},height=${popupHeight},left=${left},top=${top},scrollbars=yes,resizable=no` // 팝업창 옵션
+        );
+        // 팝업창이 정상 생성되고 focus 메서드가 지원되면, 생성된 팝업창 맨 앞으로 이동
+        if (window.focus && popup) {
+            popup.focus();
+        }
     });
 });

@@ -451,7 +451,7 @@ html {
 
     /* 메인 스와이퍼 배너 */
     .swiper_banner_main {
-        height: 200px;
+        height: 180px;
         border-radius: 20px;
         margin-top: 35px;
     }
@@ -473,7 +473,7 @@ html {
 
     .swiper-slide img {
         width: 100%;
-        height: 200px;
+        height: 180px;
         display: block;
     }
 
@@ -575,7 +575,7 @@ html {
         justify-content: center;
         width: 100%;
         max-width: 360px;
-        height: 80px;
+        height: 90px;
     }
 
     .mini-list a {
@@ -587,7 +587,7 @@ html {
     }
     .mini-list img{
         width: 100%;
-        height: 80px;
+        height: 90px;
         display: block;
     }
 
